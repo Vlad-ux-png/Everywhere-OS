@@ -64,7 +64,7 @@ Return Value:
 
 void DrawBootScreen(void) {
     FillRect(0, 0, SCR_W, SCR_H, 0x00);
-    DrawString(10, 80,
+    DrawString(168, 168,
         "Why Go Anywhere When You Are Everywhere?\nEverywhere OS",
         0x0F);
 }

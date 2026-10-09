@@ -103,8 +103,8 @@ MmFreeVirtualMemory(
         //
         // Decommit the entire VAD range.
         //
-        Base   = MI_VPN_TO_VA_ENDING(Vad->StartingVpn);
-        EndVa  = MI_VPN_TO_VA_ENDING(Vad->EndingVpn);
+        Base   = (uint32_t)MI_VPN_TO_VA_ENDING(Vad->StartingVpn);
+        EndVa  = (uint32_t)MI_VPN_TO_VA_ENDING(Vad->EndingVpn);
         Size   = EndVa - Base + 1;
         *BaseAddress = (PVOID)Base;
         if (RegionSize != NULL) {

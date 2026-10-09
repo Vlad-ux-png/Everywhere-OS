@@ -22,7 +22,7 @@ Environment:
 
 #include "explorer.h"
 
-//## Contants ##\\ 
+//## Contants ##
 
 #define FOLDER_ICO_FS_NAME  "Everywhere\\Res\\F\\folder.ico"
 
@@ -31,7 +31,7 @@ Environment:
 #define ICON_W  16
 #define ICON_H  16
 
-//## Module private state ##\\
+//## Module private state ##
 
 static uint8_t s_ico_buf[FOLDER_ICO_MAXSIZE];
 
@@ -43,7 +43,7 @@ static int s_icon_loaded = 0;
 
 static uint8_t s_vga_pal[256 * 3];
 
-//## Internal Helpers ##\\
+//## Internal Helpers ##
 
 /*++
 
@@ -103,7 +103,7 @@ static uint32_t IcoU32(const uint8_t* b, int off)
          | ((uint32_t)b[off + 3] << 24);
 }
 
-//## Public API ##\\
+//## Public API ##
 
 /*++
 

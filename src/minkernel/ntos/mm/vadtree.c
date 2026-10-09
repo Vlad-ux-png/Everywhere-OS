@@ -101,7 +101,7 @@ MiRemoveVad(
     )
 {
     MiRemoveNode(Vad, VadRoot);
-    MmFreePool(Vad, 'daVM');
+    MmFreePool(Vad, 0x6461564D);  // 'daVM'
 }
 
 /* -----------------------------------------------------------------------

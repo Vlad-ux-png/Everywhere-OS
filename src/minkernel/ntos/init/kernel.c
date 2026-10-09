@@ -58,6 +58,7 @@ void kernelMain(uint32_t* mbi) {
     IconInit();
 
     DrawBootScreen();
+    FlipBuffers();
     {
         uint32_t BootEnd = KernelGetTickCount() + 2000;
         while (KernelGetTickCount() < BootEnd) {
