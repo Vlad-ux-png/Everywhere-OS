@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -33,7 +34,7 @@ int EvryFsReadFile(const char* name, uint8_t* buf, int maxlen)
 
     int total = (int)d->size;
     if (total > maxlen) total = maxlen;
-    int     sectors = ((int)d->size + 511) / 512;
+    int sectors = (total + 511) / 512;
     uint8_t sector_buf[512];
     int     copied  = 0;
 

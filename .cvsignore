@@ -41,7 +41,6 @@ Desktop.ini
 # Binaries
 *.elf
 *.bin
-*.img
 *.exe
 *.dll
 *.o

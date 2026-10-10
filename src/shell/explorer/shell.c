@@ -14,6 +14,7 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -25,7 +26,7 @@ Environment:
 
 char shell_input[SHELL_INPUT_SIZE];
 int  shell_len = 0;
-char shell_output[64];
+char shell_output[256];
 int  shell_has_output = 0;
 
 /*++
@@ -67,8 +68,10 @@ Return Value:
 void ShellDraw(void) {
     if (!ShellWin.visible || ShellWin.minimized) return;
     DrawString(ShellWin.x + 4, ShellWin.y + 14, shell_input, 0x0F);
-    if (shell_has_output)
+    if (shell_has_output) {
         DrawString(ShellWin.x + 4, ShellWin.y + 24, shell_output, 0x0A);
+        ShellExec();
+    }
 }
 
 /*++
@@ -93,11 +96,22 @@ void ShellExec(void) {
 
     shell_has_output = 0;
 
-    if (StrEq(shell_input, "clear")) {
+    if (StrEq(shell_input, "help")) {
+        const char* msg;
+        int i = 0;
+        msg = "Commands: clear, credits, snake,\nnotes, files, mktest\n";
+        while (msg[i] && i < 63) { shell_output[i] = msg[i]; i++; }
+        shell_output[i] = 0;
+        shell_has_output = 1;
+    } else if (StrEq(shell_input, "clear")) {
         ShellClear();
     } else if (StrEq(shell_input, "credits")) {
-        DrawString(ShellWin.x + 4, ShellWin.y + 24,
-                   "Clay Sanders, Noah Juopperi\n", 0x0F);
+        const char* msg;
+        int i = 0;
+        msg = "Clay Sanders, Noah Juopperi\nVlad Lymar\n";
+        while (msg[i] && i < 63) { shell_output[i] = msg[i]; i++; }
+        shell_output[i] = 0;
+        shell_has_output = 1;
     } else if (StrEq(shell_input, "snake")) {
         SnakeWin.visible = 1;
         SnakeWin.minimized = 0;

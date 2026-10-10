@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -22,7 +23,7 @@ Environment:
 
 #include "explorer.h"
 
-//## Contants ##
+//## Constants ##
 
 #define FOLDER_ICO_FS_NAME  "Everywhere\\Res\\F\\folder.ico"
 

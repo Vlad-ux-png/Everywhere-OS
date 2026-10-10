@@ -186,7 +186,7 @@ $(DISK_IMG): $(MKDISK_EXE) $(FOLDER_ICO)
 	$(MKDISK_EXE) $(FOLDER_ICO) $@
 
 run: $(OS_ISO) $(DISK_IMG)
-	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) #-full-screen
+	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware #-full-screen
 
 $(TEST_ENTRY_OBJ): $(TEST_ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@
