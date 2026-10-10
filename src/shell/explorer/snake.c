@@ -22,6 +22,7 @@ Environment:
 
 --*/
 
+#include "rtl.h"
 #include "explorer.h"
 
 int snake_x[SNAKE_MAX];
@@ -31,6 +32,8 @@ int snake_dx = 1;
 int snake_dy = 0;
 int food_x = 20;
 int food_y = 10;
+
+static ULONG rand_seed = KernelGetTickCount(); 
 
 /*++
 
@@ -100,17 +103,13 @@ void SnakeStep(void) {
     if (snake_y[0] > SnakeWin.h - 20) snake_y[0] = SnakeWin.h - 20;
 
     for (int i = 0; i < 4; i++) {
-        if (snake_x[0] == food_x + (i % 2) && snake_y[0] == food_y + (i / 2)) {
+        if (snake_x[0] == food_x && snake_y[0] == food_y) {
             if (snake_len < SNAKE_MAX) snake_len++;
-            food_x = (food_x * 7 + 13) % (SnakeWin.w - 10);
-            food_y = (food_y * 5 + 11) % (SnakeWin.h - 20);
+    
+            food_x = RtlRandom(&rand_seed) % (SnakeWin.w - 10);
+            food_y = RtlRandom(&rand_seed) % (SnakeWin.h - 20);
         }
     }
-    /*if (snake_x[0] == food_x && snake_y[0] == food_y) {
-        if (snake_len < SNAKE_MAX) snake_len++;
-        food_x = (food_x * 7 + 13) % (SnakeWin.w - 10);
-        food_y = (food_y * 5 + 11) % (SnakeWin.h - 20);
-    }*/
 }
 
 /*++
