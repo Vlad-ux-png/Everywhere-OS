@@ -33,7 +33,7 @@ int snake_dy = 0;
 int food_x = 20;
 int food_y = 10;
 
-static ULONG rand_seed = KernelGetTickCount(); 
+static ULONG rand_seed = 0; 
 
 /*++
 
@@ -52,6 +52,7 @@ Return Value:
 --*/
 
 void SnakeInit(void) {
+    rand_seed = KernelGetTickCount();
     for (int i = 0; i < snake_len; i++) {
         snake_x[i] = 30 - i;
         snake_y[i] = 30;
