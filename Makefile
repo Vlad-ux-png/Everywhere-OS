@@ -136,7 +136,7 @@ $(shell mkdir -p $(BUILD)/src/onecore/drivers/input/mouse/mouclass)
 $(shell mkdir -p $(BIN))
 $(shell mkdir -p $(ISO)/boot/grub)
 
-all: $(OS_ISO)
+all: $(OS_ISO) $(DISK_IMG)
 
 $(ENTRY_OBJ): $(ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@

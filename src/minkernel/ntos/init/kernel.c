@@ -9,12 +9,13 @@ Module Name:
 Abstract:
 
     Main entry point for the GUI kernel. All subsystems are now split
-    into base\ntos\ke\* (kernel) and shell\explorer\* (userspace).
+    into src\minkernel\ntos\ke\* (kernel) and src\shell\explorer\* (userspace).
 
 Author(s):
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
