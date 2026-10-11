@@ -169,17 +169,18 @@ MiInitializeNonPagedPool(
     // Write the single seed block.  PoolType=0 means free.
     //
     InitialBlock = (PPOOL_HEADER)PoolBase;
-    InitialBlock->Ulong1       = 0;
-    InitialBlock->BlockSize    = (USHORT)(BlockSize / POOL_BLOCK_SIZE);
     InitialBlock->PreviousSize = 0;
-    InitialBlock->PoolType     = POOL_TYPE_FREE;
+    InitialBlock->BlockSize    = (ULONG)(BlockSize / POOL_BLOCK_SIZE);
+    InitialBlock->PoolType     = POOL_TYPE_FREE; // 0
     InitialBlock->PoolTag      = 0;
+    InitialBlock->FreeNext     = NULL;
+    InitialBlock->FreePrev     = NULL;
 
     //
     // Put the initial block into the overflow free list (index
     // POOL_SMALL_LISTS) since it covers the entire pool region.
     //
-    Entry = (PLIST_ENTRY)((PUCHAR)InitialBlock + MM_POOL_HEADER_SIZE);
+    Entry = (PLIST_ENTRY)&InitialBlock->FreeNext;
     Index = POOL_SMALL_LISTS;
     InsertHeadList(&MiNonPagedPoolFreeListHead[Index], Entry);
 
@@ -273,7 +274,7 @@ MmAllocatePool(
 
     ListEntry = MiNonPagedPoolFreeListHead[FoundIndex].Flink;
     RemoveEntryList(ListEntry);
-    Block = (PPOOL_HEADER)((PUCHAR)ListEntry - MM_POOL_HEADER_SIZE);
+    Block = (PPOOL_HEADER)((PUCHAR)ListEntry - 16); 
 
     //
     // If the found block is larger than needed and can be split, carve
@@ -283,12 +284,12 @@ MmAllocatePool(
 
         SplitBlockSize = (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE) - TotalSize;
         SplitBlock = (PPOOL_HEADER)((PUCHAR)Block + TotalSize);
-
-        SplitBlock->Ulong1       = 0;
-        SplitBlock->BlockSize    = (USHORT)(SplitBlockSize / POOL_BLOCK_SIZE);
-        SplitBlock->PreviousSize = (USHORT)(TotalSize / POOL_BLOCK_SIZE);
+        SplitBlock->PreviousSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
+        SplitBlock->BlockSize    = (ULONG)(SplitBlockSize / POOL_BLOCK_SIZE);
         SplitBlock->PoolType     = POOL_TYPE_FREE;
         SplitBlock->PoolTag      = 0;
+        SplitBlock->FreeNext     = NULL;
+        SplitBlock->FreePrev     = NULL;
 
         //
         // Update the PreviousSize of the block that follows the split block.
@@ -301,12 +302,12 @@ MmAllocatePool(
         //
         // Place the split block on the appropriate free list.
         //
-        SplitIndex  = MiPoolIndexFromSize(SplitBlockSize);
-        ListEntry   = (PLIST_ENTRY)((PUCHAR)SplitBlock + MM_POOL_HEADER_SIZE);
+        SplitIndex = MiPoolIndexFromSize(SplitBlockSize);
+        ListEntry  = (PLIST_ENTRY)&SplitBlock->FreeNext;
         InsertHeadList(&MiNonPagedPoolFreeListHead[SplitIndex], ListEntry);
         MmPoolFreeBytes += SplitBlockSize;
 
-        Block->BlockSize = (USHORT)(TotalSize / POOL_BLOCK_SIZE);
+        Block->BlockSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
     }
 
     Block->PoolType = (USHORT)POOL_TYPE_NONPAGED;
@@ -382,10 +383,13 @@ MmFreePool(
         KeBugCheckEx(BAD_POOL_HEADER, 0, (ULONG_PTR)P, 0, 0);
     }
 
-    TotalSize = (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE);
     Block->PoolType = POOL_TYPE_FREE;
     Block->PoolTag  = 0;
+    Block->FreeNext = NULL;
+    Block->FreePrev = NULL;
     MmPoolFreeBytes += TotalSize;
+
+    ListEntry = (PLIST_ENTRY)&NextBlock->FreeNext; 
 
     //
     // Forward coalesce: merge with the next physical block if it is free.
@@ -441,7 +445,7 @@ MmFreePool(
     }
 
     FreeIndex = MiPoolIndexFromSize(TotalSize);
-    ListEntry = (PLIST_ENTRY)((PUCHAR)Block + MM_POOL_HEADER_SIZE);
+    ListEntry = (PLIST_ENTRY)&Block->FreeNext;
     InsertHeadList(&MiNonPagedPoolFreeListHead[FreeIndex], ListEntry);
 
     UNLOCK_POOL();

@@ -43,7 +43,7 @@ Environment:
 #define EVRYFS_DIR_LBA      1
 #define EVRYFS_DATA_START   2
 #define EVRYFS_MAX_FILES    12
-#define EVRYFS_NAME_LEN     29
+#define EVRYFS_NAME_LEN     28
 
 /* 1 MB raw disk image */
 #define DISK_SIZE           (1024 * 1024)

@@ -480,16 +480,12 @@ typedef struct _MDL {
 #define POOL_SMALL_LISTS    ((ULONG)(POOL_MAX_BLOCK_SIZE / POOL_BLOCK_SIZE))
 
 typedef struct _POOL_HEADER {
-    union {
-        struct {
-            USHORT PreviousSize : 9;
-            USHORT PoolIndex    : 7;
-            USHORT BlockSize    : 9;
-            USHORT PoolType     : 7;
-        };
-        ULONG Ulong1;
-    };
-    ULONG PoolTag;
+    ULONG PreviousSize;  
+    ULONG BlockSize;    
+    ULONG PoolType;       
+    ULONG PoolTag;       
+    struct _POOL_HEADER *FreeNext;       
+    struct _POOL_HEADER *FreePrev; 
 } POOL_HEADER, *PPOOL_HEADER;
 
 //

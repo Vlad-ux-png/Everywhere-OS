@@ -100,15 +100,28 @@ void kernelMain(uint32_t* mbi) {
         UpdateWindowPhysics(&FilesWin);
 
         DrawDesktop();
-        DrawWindowFrame(&ShellWin);
-        DrawWindowFrame(&NotesWin);
-        DrawWindowFrame(&SnakeWin);
-        DrawWindowFrame(&FilesWin);
 
-        ShellDraw();
-        NotesDraw();
-        SnakeDraw();
-        FilesDraw();
+        WINDOW* wins[4] = { &ShellWin, &NotesWin, &SnakeWin, &FilesWin };
+
+        WINDOW* active_p = wins[active_window];
+        int dest = 0;
+        for (int i = 0; i < 4; i++) {
+            if (i != active_window) {
+                wins[dest++] = wins[i];
+            }
+        }
+        wins[3] = active_p;
+
+        for (int i = 0; i < 4; i++) {
+            DrawWindowFrame(wins[i]);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (wins[i] == &ShellWin) ShellDraw();
+            else if (wins[i] == &NotesWin) NotesDraw();
+            else if (wins[i] == &SnakeWin) SnakeDraw();
+            else if (wins[i] == &FilesWin) FilesDraw();
+        }
 
         DrawTaskbar();
         DrawMouseCursor();

@@ -125,8 +125,8 @@ void ShellExec(void) {
         static const uint8_t hello[] = "Hello, World!\n";
         const char* msg;
         int i = 0;
-        if (EvryFsWriteFile("hello.txt", hello, 14) == 0) {
-            msg = "Created hello.txt";
+        if (EvryFsWriteFile("Test\\hello.txt", hello, 14) == 0) {
+            msg = "Created Test\\hello.txt";
         } else {
             msg = "No disk found";
         }
