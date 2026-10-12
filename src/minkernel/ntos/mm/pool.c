@@ -241,6 +241,7 @@ MmAllocatePool(
     PPOOL_HEADER Block;
     PPOOL_HEADER SplitBlock;
     PPOOL_HEADER NextPhys;
+    ULONG        OrigBlockSize;
     ULONG        SplitBlockSize;
     ULONG        SplitIndex;
     PUCHAR       Payload;
@@ -276,13 +277,16 @@ MmAllocatePool(
     RemoveEntryList(ListEntry);
     Block = (PPOOL_HEADER)((PUCHAR)ListEntry - 16); 
 
+    OrigBlockSize = (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE);
+    MmPoolFreeBytes -= OrigBlockSize;
+
     //
     // If the found block is larger than needed and can be split, carve
     // a new free block off the tail.
     //
-    if ((ULONG)(Block->BlockSize * POOL_BLOCK_SIZE) >= TotalSize + MM_POOL_MIN_BLOCK) {
+    if (OrigBlockSize >= TotalSize + MM_POOL_MIN_BLOCK) {
 
-        SplitBlockSize = (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE) - TotalSize;
+        SplitBlockSize = OrigBlockSize - TotalSize;
         SplitBlock = (PPOOL_HEADER)((PUCHAR)Block + TotalSize);
         SplitBlock->PreviousSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
         SplitBlock->BlockSize    = (ULONG)(SplitBlockSize / POOL_BLOCK_SIZE);
@@ -308,11 +312,15 @@ MmAllocatePool(
         MmPoolFreeBytes += SplitBlockSize;
 
         Block->BlockSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
+    } else {
+        MmPoolFreeBytes += OrigBlockSize;
+        MmPoolFreeBytes -= (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE);
     }
 
-    Block->PoolType = (USHORT)POOL_TYPE_NONPAGED;
+    Block->PoolType = (ULONG)POOL_TYPE_NONPAGED;
     Block->PoolTag  = Tag;
-    MmPoolFreeBytes -= (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE);
+    Block->FreeNext = (PPOOL_HEADER)(uintptr_t)0xDEADBEEF;
+    Block->FreePrev = (PPOOL_HEADER)(uintptr_t)0xDEADBEEF;
 
     UNLOCK_POOL();
 
@@ -365,6 +373,7 @@ MmFreePool(
     PPOOL_HEADER PrevBlock;
     PPOOL_HEADER NextBlock;
     PLIST_ENTRY  ListEntry;
+    ULONG        BlockBytes;
     ULONG        TotalSize;
     ULONG        FreeIndex;
 
@@ -383,13 +392,14 @@ MmFreePool(
         KeBugCheckEx(BAD_POOL_HEADER, 0, (ULONG_PTR)P, 0, 0);
     }
 
+    BlockBytes = (ULONG)(Block->BlockSize * POOL_BLOCK_SIZE);
     Block->PoolType = POOL_TYPE_FREE;
     Block->PoolTag  = 0;
     Block->FreeNext = NULL;
     Block->FreePrev = NULL;
-    MmPoolFreeBytes += TotalSize;
+    MmPoolFreeBytes += BlockBytes;
 
-    ListEntry = (PLIST_ENTRY)&NextBlock->FreeNext; 
+    TotalSize = BlockBytes;
 
     //
     // Forward coalesce: merge with the next physical block if it is free.
@@ -402,11 +412,11 @@ MmFreePool(
         //
         // Remove next from its free list.
         //
-        ListEntry = (PLIST_ENTRY)((PUCHAR)NextBlock + MM_POOL_HEADER_SIZE);
+        ListEntry = (PLIST_ENTRY)&NextBlock->FreeNext;
         RemoveEntryList(ListEntry);
 
         TotalSize += (ULONG)(NextBlock->BlockSize * POOL_BLOCK_SIZE);
-        Block->BlockSize = (USHORT)(TotalSize / POOL_BLOCK_SIZE);
+        Block->BlockSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
 
         //
         // Update PreviousSize of the block after the merged region.
@@ -426,11 +436,11 @@ MmFreePool(
 
         if (PrevBlock->PoolType == POOL_TYPE_FREE) {
 
-            ListEntry = (PLIST_ENTRY)((PUCHAR)PrevBlock + MM_POOL_HEADER_SIZE);
+            ListEntry = (PLIST_ENTRY)&PrevBlock->FreeNext;
             RemoveEntryList(ListEntry);
 
             TotalSize += (ULONG)(PrevBlock->BlockSize * POOL_BLOCK_SIZE);
-            PrevBlock->BlockSize = (USHORT)(TotalSize / POOL_BLOCK_SIZE);
+            PrevBlock->BlockSize = (ULONG)(TotalSize / POOL_BLOCK_SIZE);
 
             //
             // The successor block's PreviousSize must reflect the merged size.
