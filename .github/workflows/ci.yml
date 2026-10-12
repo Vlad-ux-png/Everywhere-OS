@@ -58,3 +58,14 @@ jobs:
           path: |
             bin/i386fre/images/os.iso
             bin/i386fre/images/disk.img
+
+      - name: Test
+        run: make test
+
+      - name: Upload test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everywhere-os-test
+          path: |
+            obj/i386fre/test.log

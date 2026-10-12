@@ -26,7 +26,7 @@ Environment:
 #include "ke.h"
 
 WINDOW ShellWin  = { 10, 10, 300, 70, 0, 0, "Shell", 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-WINDOW NotesWin  = { 10, 85, 300, 70, 0, 0, "Notes", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+WINDOW NotesWin  = { 10, 85, 300, 70, 0, 0, "Notes", 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 WINDOW SnakeWin  = { 60, 40, 200, 120, 0, 0, "Snake", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 WINDOW FilesWin  = { 320, 10, 300, 160, 0, 0, "Files", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
