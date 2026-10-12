@@ -99,7 +99,7 @@ void ShellExec(void) {
     if (StrEq(shell_input, "help")) {
         const char* msg;
         int i = 0;
-        msg = "Commands: clear, credits, snake,\nnotes, files, mktest\n";
+        msg = "Commands: clear, credits, snake,\nnotes, files, mktest,\nreboot\n";
         while (msg[i] && i < 63) { shell_output[i] = msg[i]; i++; }
         shell_output[i] = 0;
         shell_has_output = 1;
@@ -121,6 +121,8 @@ void ShellExec(void) {
     } else if (StrEq(shell_input, "files")) {
         FilesWin.visible = 1;
         FilesWin.minimized = 0;
+    } else if (StrEq(shell_input, "reboot")) {
+        RebootSystem();
     } else if (StrEq(shell_input, "mktest")) {
         static const uint8_t hello[] = "Hello, World!\n";
         const char* msg;

@@ -73,9 +73,6 @@ void kernelMain(uint32_t* mbi) {
 
         last_scancode = 0;
         char ch = KbdClassReadInput();
-        if (ch == 27) {
-            RebootSystem();
-        }
 
         /* Route keyboard input to the active window */
         HandleKeyboardInput(ch);
