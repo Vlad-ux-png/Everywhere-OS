@@ -7,8 +7,17 @@ NASM    = nasm
 
 HOST_CC = gcc
 
-CFLAGS  = -c -ffreestanding -fno-builtin -fno-stack-protector -nostdlib \
-          -m32 -Wall -Wextra \
+CFLAGS  = -m32 -ffreestanding \
+          -fno-stack-protector \
+          -fno-leading-underscore \
+          -mgeneral-regs-only \
+          -mno-red-zone -c \
+          -fno-pic -fno-asynchronous-unwind-tables \
+          -fno-strict-aliasing -mno-sse -O2 \
+          -Wno-unused-parameter -Wno-unused-function \
+          -Wno-unused-variable \
+		  -Wno-unused-but-set-variable -Wno-unused-value \
+          -Wno-missing-field \
           -I./src/minkernel/ntos/inc \
           -I./src/minkernel/ntos/mm \
           -I./src/minkernel/boot/kdcom \
