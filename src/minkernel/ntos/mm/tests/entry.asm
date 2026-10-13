@@ -104,9 +104,19 @@ MmTestStackTop:
 
 section .text
 global start
+
+extern __bss_start
+extern __end
+
 extern testMain
 
 start:
+    mov edi, __bss_start
+    mov ecx, __end
+    sub ecx, edi
+    xor al, al
+    rep stosb
+
     ; Load the GDT defined above and reload all segment registers so they
     ; reference the flat descriptors.
     lgdt    [MmTestGdtPtr]
