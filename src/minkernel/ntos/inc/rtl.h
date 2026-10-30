@@ -323,4 +323,76 @@ RtlRandom(
     PULONG Seed
     );
 
+/* -----------------------------------------------------------------------
+ * Generic Table Primitives
+ * ----------------------------------------------------------------------- */
+
+typedef struct _RTL_GENERIC_TABLE {
+    PVOID TableRoot;
+    LIST_ENTRY LLHead;
+    PVOID LastElementFound;
+    ULONG LastIndexFound;
+    ULONG NumberOfElements;
+    PVOID CompareRoutine;
+    PVOID AllocateRoutine;
+    PVOID FreeRoutine;
+    PVOID TableContext;
+    ULONG LastElementIndex;
+} RTL_GENERIC_TABLE, *PRTL_GENERIC_TABLE;
+
+typedef 
+PVOID
+(*PRTL_GENERIC_TABLE_ALLOCATE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    CLONG ByteSize
+);
+
+typedef 
+VOID
+(*PRTL_GENERIC_TABLE_FREE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    PVOID Buffer
+);
+
+typedef 
+LONG
+(*PRTL_GENERIC_TABLE_COMPARE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    PVOID FirstStruct,
+    PVOID SecondStruct
+);
+
+VOID
+RtlInitializeGenericTable(
+    PRTL_GENERIC_TABLE Table,
+    PVOID CompareRoutine,
+    PVOID AllocateRoutine,
+    PVOID FreeRoutine,
+    PVOID TableContext
+    );
+
+ULONG
+RtlNumberGenericTableElements(
+    PRTL_GENERIC_TABLE Table
+    );
+
+BOOLEAN
+RtlIsGenericTableEmpty(
+    PRTL_GENERIC_TABLE Table
+    );
+
+PVOID
+NTAPI
+RtlGenericTableAllocate(
+    PRTL_GENERIC_TABLE Table,
+    CLONG ByteSize
+    );
+
+VOID
+NTAPI
+RtlGenericTableFree(
+    PRTL_GENERIC_TABLE Table,
+    PVOID Buffer
+    );
+
 #endif /* _RTL_H_ */

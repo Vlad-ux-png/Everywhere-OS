@@ -26,6 +26,7 @@ Environment:
 
 #include "mm.h"
 #include "ntstatus.h"
+#include "ntdef.h"
 #include "rtl.h"
 
 /* -----------------------------------------------------------------------

@@ -22,8 +22,9 @@ Environment:
 
 --*/
 
-#include "rtl.h"
+#include "ntdef.h"
 #include "explorer.h"
+#include "rtl.h"
 
 int snake_x[SNAKE_MAX];
 int snake_y[SNAKE_MAX];

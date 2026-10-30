@@ -21,6 +21,7 @@ Environment:
 
 --*/
 
+#include "../inc/ntdef.h"
 #include "../inc/rtl.h"
 
 /*

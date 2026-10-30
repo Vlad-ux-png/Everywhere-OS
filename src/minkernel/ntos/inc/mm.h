@@ -62,6 +62,8 @@ typedef USHORT     *PUSHORT;
 typedef UCHAR      *PUCHAR;
 typedef CHAR       *PCHAR;
 typedef PVOID      *PPVOID;
+typedef BOOLEAN    *PBOOLEAN;
+typedef ULONG       CLONG;
 
 typedef union _LARGE_INTEGER {
     struct {

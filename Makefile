@@ -100,7 +100,8 @@ MOUCLASS_SRC = src/onecore/drivers/input/mouse/mouclass/mouclass.c
 RTL_SRC = src/minkernel/ntos/rtl/movemem.c \
           src/minkernel/ntos/rtl/string.c \
           src/minkernel/ntos/rtl/bitmapex.c \
-          src/minkernel/ntos/rtl/random.c
+          src/minkernel/ntos/rtl/random.c \
+          src/minkernel/ntos/rtl/gentable.c
 
 # Executive (src/minkernel/ntos/ex)
 EX_SRC = src/minkernel/ntos/ex/exinit.c \
