@@ -46,7 +46,7 @@ Return Value:
 
 --*/
 
-void kernelMain(uint32_t* mbi) {
+void KiStartupSystem(uint32_t* mbi) {
     KdComPortInitialize();
     MmInit(mbi);
     ExInitSystem();

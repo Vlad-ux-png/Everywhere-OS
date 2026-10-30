@@ -22,6 +22,7 @@ Environment:
 --*/
 
 #include "../inc/ex.h"
+#include "../inc/ob.h"
 
 extern LARGE_INTEGER ExpLuid;
 
@@ -60,6 +61,8 @@ ExInitSystem(
         (PVOID)RtlGenericTableFree,   
         NULL                       
     );
+
+    ObInitSystem();
     
     return TRUE;
 }

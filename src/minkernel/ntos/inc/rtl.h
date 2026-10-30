@@ -340,23 +340,31 @@ typedef struct _RTL_GENERIC_TABLE {
     ULONG LastElementIndex;
 } RTL_GENERIC_TABLE, *PRTL_GENERIC_TABLE;
 
+typedef struct _RTL_TABLE_NODE {
+    struct _RTL_TABLE_NODE *Left;
+    struct _RTL_TABLE_NODE *Right;
+    struct _RTL_TABLE_NODE *Parent;
+    ULONG                   BalanceFactor; 
+    CHAR                    Buffer[1];
+} RTL_TABLE_NODE, *PRTL_TABLE_NODE;
+
 typedef 
 PVOID
-(*PRTL_GENERIC_TABLE_ALLOCATE_ROUTINE)(
+(*PRTL_GENERIC_ALLOCATE_ROUTINE)(
     struct _RTL_GENERIC_TABLE *Table,
     CLONG ByteSize
 );
 
 typedef 
 VOID
-(*PRTL_GENERIC_TABLE_FREE_ROUTINE)(
+(*PRTL_GENERIC_FREE_ROUTINE)(
     struct _RTL_GENERIC_TABLE *Table,
     PVOID Buffer
 );
 
 typedef 
 LONG
-(*PRTL_GENERIC_TABLE_COMPARE_ROUTINE)(
+(*PRTL_GENERIC_COMPARE_ROUTINE)(
     struct _RTL_GENERIC_TABLE *Table,
     PVOID FirstStruct,
     PVOID SecondStruct
@@ -364,11 +372,11 @@ LONG
 
 VOID
 RtlInitializeGenericTable(
-    PRTL_GENERIC_TABLE Table,
-    PVOID CompareRoutine,
-    PVOID AllocateRoutine,
-    PVOID FreeRoutine,
-    PVOID TableContext
+    PRTL_GENERIC_TABLE          Table,
+    PRTL_GENERIC_COMPARE_ROUTINE CompareRoutine,
+    PRTL_GENERIC_ALLOCATE_ROUTINE AllocateRoutine,
+    PRTL_GENERIC_FREE_ROUTINE     FreeRoutine,
+    PVOID                       TableContext
     );
 
 ULONG
@@ -379,6 +387,26 @@ RtlNumberGenericTableElements(
 BOOLEAN
 RtlIsGenericTableEmpty(
     PRTL_GENERIC_TABLE Table
+    );
+
+PVOID
+RtlInsertElementGenericTable(
+    PRTL_GENERIC_TABLE Table,
+    PVOID              Buffer,
+    ULONG              BufferSize,
+    PBOOLEAN           NewElement
+    );
+
+BOOLEAN
+RtlDeleteElementGenericTable(
+    PRTL_GENERIC_TABLE Table,
+    PVOID              Buffer
+    );
+
+PVOID
+RtlLookupElementGenericTable(
+    PRTL_GENERIC_TABLE Table,
+    PVOID              Buffer
     );
 
 PVOID

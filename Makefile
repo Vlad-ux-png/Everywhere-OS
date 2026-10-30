@@ -10,6 +10,7 @@ HOST_CC = gcc
 CFLAGS  = -m32 -ffreestanding \
           -fno-stack-protector \
           -fno-leading-underscore \
+          -fshort-wchar \
           -mgeneral-regs-only \
           -mno-red-zone -c \
           -fno-pic -fno-asynchronous-unwind-tables \
@@ -24,7 +25,8 @@ CFLAGS  = -m32 -ffreestanding \
           -I./src/shell/explorer \
           -I./src/minkernel/fs/evryfs \
           -I./src/onecore/drivers/input/keyboard/kbdclass \
-          -I./src/onecore/drivers/input/mouse/mouclass
+          -I./src/onecore/drivers/input/mouse/mouclass \
+          -I./src/minkernel/ntos/ob 
 
 LDFLAGS = -m elf_i386 -T src/minkernel/ntos/init/kernel.ld
 ASFLAGS = -f elf32
@@ -109,10 +111,14 @@ EX_SRC = src/minkernel/ntos/ex/exinit.c \
          src/minkernel/ntos/ex/lookasid.c \
          src/minkernel/ntos/ex/luid.c
 
+# Object Manager
+OB_SRC = src/minkernel/ntos/ob/obinit.c \
+         src/minkernel/ntos/ob/obhandle.c
+
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/kernel.c
 
-ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC)
+ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) $(OB_SRC)
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
 
 KERNEL_ELF = $(BUILD)/kernel.elf
@@ -135,6 +141,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/init)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ke)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/rtl)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm/tests)

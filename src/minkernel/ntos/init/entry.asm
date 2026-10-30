@@ -39,7 +39,7 @@ gdt_ptr:
 
 section .text
 global start
-extern kernelMain
+extern KiStartupSystem
 
 start:
     ; Load our own GDT so segment selectors are known
@@ -54,8 +54,8 @@ start:
 
 .flush_cs:
     mov esp, 0x90000
-    push ebx                   ; pass multiboot info pointer to kernelMain
-    call kernelMain
+    push ebx                   ; pass multiboot info pointer to KiStartupSystem
+    call KiStartupSystem
 
 .hang:
     cli
