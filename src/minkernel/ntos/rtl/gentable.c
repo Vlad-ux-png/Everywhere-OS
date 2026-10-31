@@ -23,6 +23,11 @@ Environment:
 #include "../inc/ntdef.h"
 #include "../inc/rtl.h"
 
+#define GENTABLE_POOL_SIZE (64 * 1024) 
+
+static UCHAR GenTablePool[GENTABLE_POOL_SIZE];
+static ULONG GenTablePoolOffset = 0;
+
 VOID
 RtlInitializeGenericTable(
     PRTL_GENERIC_TABLE          Table,
@@ -248,8 +253,32 @@ RtlGenericTableAllocate(
     CLONG ByteSize
 )
 {
+    PVOID Ptr;
+    ULONG AlignedSize;
+    PUCHAR BytePtr;
+    CLONG i;
+
     (VOID)Table;
-    return NULL;
+
+    if (ByteSize == 0) {
+        return NULL;
+    }
+
+    AlignedSize = (ByteSize + 7) & ~7;
+
+    if (GenTablePoolOffset + AlignedSize > GENTABLE_POOL_SIZE) {
+        return NULL;
+    }
+
+    Ptr = &GenTablePool[GenTablePoolOffset];
+    GenTablePoolOffset += AlignedSize;
+
+    BytePtr = (PUCHAR)Ptr;
+    for (i = 0; i < ByteSize; i++) {
+        BytePtr[i] = 0;
+    }
+
+    return Ptr;
 }
 
 VOID
@@ -260,4 +289,5 @@ RtlGenericTableFree(
 )
 {
     (VOID)Table;
+    (VOID)Buffer;
 }

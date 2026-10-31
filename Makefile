@@ -111,9 +111,9 @@ EX_SRC = src/minkernel/ntos/ex/exinit.c \
          src/minkernel/ntos/ex/lookasid.c \
          src/minkernel/ntos/ex/luid.c
 
-# Object Manager
+# Object Manager (src/minkernel/ntos/ob)
 OB_SRC = src/minkernel/ntos/ob/obinit.c \
-         src/minkernel/ntos/ob/obhandle.c
+         src/minkernel/ntos/ob/obtype.c
 
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/kernel.c

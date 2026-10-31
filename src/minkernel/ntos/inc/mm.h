@@ -499,6 +499,11 @@ typedef PPOOL_HEADER PMM_POOL_HEADER;
 #define MM_POOL_HEADER_SIZE  ((ULONG)sizeof(POOL_HEADER))
 #define MM_POOL_MIN_BLOCK    (MM_POOL_HEADER_SIZE + POOL_BLOCK_SIZE)
 
+#ifndef CONTAINING_RECORD
+#define CONTAINING_RECORD(address, type, field) \
+    ((type *)((PUCHAR)(address) - (ULONG_PTR)(&((type *)0)->field)))
+#endif
+
 /* -----------------------------------------------------------------------
  * Exported globals
  * ----------------------------------------------------------------------- */

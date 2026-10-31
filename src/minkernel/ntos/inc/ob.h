@@ -61,9 +61,10 @@ ObInitSystem(
     VOID
 );
 
-VOID
-ObReferenceObject(
-    IN PVOID Object
+POBJECT_TYPE
+ObCreateObjectType(
+    PCWSTR       TypeNameString,
+    MM_POOL_TYPE PoolType
 );
 
 #endif // _OB_H_
