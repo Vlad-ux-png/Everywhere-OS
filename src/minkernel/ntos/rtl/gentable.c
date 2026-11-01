@@ -23,17 +23,10 @@ Environment:
 #include "../inc/ntdef.h"
 #include "../inc/rtl.h"
 
-#define GENTABLE_POOL_SIZE (64 * 1024) 
-
-static UCHAR GenTablePool[GENTABLE_POOL_SIZE];
-static ULONG GenTablePoolOffset = 0;
-
 VOID
 RtlInitializeGenericTable(
     PRTL_GENERIC_TABLE          Table,
     PRTL_GENERIC_COMPARE_ROUTINE CompareRoutine,
-    PRTL_GENERIC_ALLOCATE_ROUTINE AllocateRoutine,
-    PRTL_GENERIC_FREE_ROUTINE     FreeRoutine,
     PVOID                       TableContext
     )
 {
@@ -46,8 +39,6 @@ RtlInitializeGenericTable(
     Table->LastIndexFound = 0;
     Table->NumberOfElements = 0;
     Table->CompareRoutine = (PVOID)CompareRoutine;
-    Table->AllocateRoutine = (PVOID)AllocateRoutine;
-    Table->FreeRoutine = (PVOID)FreeRoutine;
     Table->TableContext = TableContext;
     Table->LastElementIndex = 0;
 }
@@ -69,54 +60,8 @@ RtlIsGenericTableEmpty(
 }
 
 /* -----------------------------------------------------------------------
- * Default Pool Allocator Bridges 
+ * Default Bridges 
  * ----------------------------------------------------------------------- */
-
-PVOID
-NTAPI
-RtlGenericTableAllocate(
-    PRTL_GENERIC_TABLE Table,
-    CLONG ByteSize
-)
-{
-    PVOID Ptr;
-    ULONG AlignedSize;
-    PUCHAR BytePtr;
-    CLONG i;
-
-    (VOID)Table;
-
-    if (ByteSize == 0) {
-        return NULL;
-    }
-
-    AlignedSize = (ByteSize + 7) & ~7;
-
-    if (GenTablePoolOffset + AlignedSize > GENTABLE_POOL_SIZE) {
-        return NULL;
-    }
-
-    Ptr = &GenTablePool[GenTablePoolOffset];
-    GenTablePoolOffset += AlignedSize;
-
-    BytePtr = (PUCHAR)Ptr;
-    for (i = 0; i < ByteSize; i++) {
-        BytePtr[i] = 0;
-    }
-
-    return Ptr;
-}
-
-VOID
-NTAPI
-RtlGenericTableFree(
-    PRTL_GENERIC_TABLE Table,
-    PVOID Buffer
-)
-{
-    (VOID)Table;
-    (VOID)Buffer;
-}
 
 LONG
 NTAPI
