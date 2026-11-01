@@ -29,7 +29,7 @@ Environment:
 Routine Description:
 
     Initializes the Object Manager subsystem, creating foundational
-    object types like Directory and SymbolicLink.
+    object type.
 
 Arguments:
 
@@ -37,7 +37,7 @@ Arguments:
 
 Return Value:
 
-    None. (Triggers a bugcheck if critical types fail to initialize).
+    None.
 
 --*/
 VOID
