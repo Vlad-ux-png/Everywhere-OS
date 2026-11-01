@@ -48,5 +48,5 @@ ObInitSystem(
     //
     // Create File object type
     //
-    ObCreateObjectType(L"File", NonPagedPool);
+    ObCreateObjectType("File", NonPagedPool);
 }
