@@ -37,8 +37,7 @@ Arguments:
 
 Return Value:
 
-    Status.
-    STATUS_SUCCESS - Object Descriptor Initialized Successfully.
+    NTSTATUS - Status of the operation.
 
 --*/
 
