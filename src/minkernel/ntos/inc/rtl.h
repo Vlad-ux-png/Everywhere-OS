@@ -359,8 +359,6 @@ typedef struct _RTL_GENERIC_TABLE {
     ULONG LastIndexFound;
     ULONG NumberOfElements;
     PVOID CompareRoutine;
-    PVOID AllocateRoutine;
-    PVOID FreeRoutine;
     PVOID TableContext;
     ULONG LastElementIndex;
 } RTL_GENERIC_TABLE, *PRTL_GENERIC_TABLE;
