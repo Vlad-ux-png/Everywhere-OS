@@ -63,32 +63,6 @@ ObCreateObjectType(
 
 Routine Description:
 
-    Retrieves the global File object type descriptor.
-
-Arguments:
-
-    None.
-
-Return Value:
-
-    POBJECT_TYPE - Pointer to the File object type.
-
---*/
-POBJECT_TYPE
-ObReferenceObjectTypeByName(
-    PCWSTR TypeNameString
-)
-{
-    if (TypeNameString != NULL && wcscmp(TypeNameString, L"File") == 0) {
-        return &FileType;
-    }
-    return NULL;
-}
-
-/*++
-
-Routine Description:
-
     Retrieves a system object type descriptor by its name, searching
     among the registered object types.
 
@@ -110,7 +84,7 @@ ObReferenceObjectTypeByName(
         return NULL;
     }
 
-    if (RtlCompareWcharCaseInsensitive(TypeNameString, "File") == 0) {
+    if (RtlCompareWcharCaseInsensitive(TypeNameString, L"File") == 0) {
         return &FileType;
     }
 
