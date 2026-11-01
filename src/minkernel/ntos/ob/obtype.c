@@ -89,29 +89,6 @@ ObReferenceObjectTypeByName(
 
 Routine Description:
 
-    Retrieves the global File object type descriptor.
-
-Arguments:
-
-    None.
-
-Return Value:
-
-    POBJECT_TYPE - Pointer to the File object type.
-
---*/
-POBJECT_TYPE
-ObGetFileType(
-    VOID
-)
-{
-    return &FileType;
-}
-
-/*++
-
-Routine Description:
-
     Retrieves a system object type descriptor by its name, searching
     among the registered object types.
 
@@ -134,7 +111,7 @@ ObReferenceObjectTypeByName(
     }
 
     if (RtlCompareWcharCaseInsensitive(TypeNameString, "File") == 0) {
-        return ObGetFileType();
+        return &FileType;
     }
 
     return NULL;
