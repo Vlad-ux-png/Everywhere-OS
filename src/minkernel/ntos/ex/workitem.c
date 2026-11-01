@@ -17,7 +17,7 @@ Author(s):
 
 Environment:
 
-    Kernel mode.
+    Kernel-mode only.
 
 --*/
 
