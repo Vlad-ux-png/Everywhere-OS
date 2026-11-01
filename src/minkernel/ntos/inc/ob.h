@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Constant definitions and Routines for the Object Manager.
+    Constant definitions and primitives for the Object Manager.
 
 Author:
 
