@@ -22,6 +22,7 @@
 ; Author:
 ;
 ;     Noah Juopperi <nipfswd@gmail.com>
+;     Vlad Lymar <ggcc98765432110@gmail.com>
 ;
 ; Environment:
 ;
