@@ -399,8 +399,6 @@ VOID
 RtlInitializeGenericTable(
     PRTL_GENERIC_TABLE          Table,
     PRTL_GENERIC_COMPARE_ROUTINE CompareRoutine,
-    PRTL_GENERIC_ALLOCATE_ROUTINE AllocateRoutine,
-    PRTL_GENERIC_FREE_ROUTINE     FreeRoutine,
     PVOID                       TableContext
     );
 
@@ -412,20 +410,6 @@ RtlNumberGenericTableElements(
 BOOLEAN
 RtlIsGenericTableEmpty(
     PRTL_GENERIC_TABLE Table
-    );
-
-PVOID
-NTAPI
-RtlGenericTableAllocate(
-    PRTL_GENERIC_TABLE Table,
-    CLONG ByteSize
-    );
-
-VOID
-NTAPI
-RtlGenericTableFree(
-    PRTL_GENERIC_TABLE Table,
-    PVOID Buffer
     );
 
 LONG
