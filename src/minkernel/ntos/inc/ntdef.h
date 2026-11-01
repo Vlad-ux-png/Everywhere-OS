@@ -27,13 +27,17 @@ Environment:
  * Calling Conventions
  * ----------------------------------------------------------------------- */
 
+#ifndef NTAPI
 #define NTAPI
+#endif
 
-#define NTSYSAPI
-
+#ifndef IN
 #define IN
+#endif
 
+#ifndef OUT
 #define OUT
+#endif
 
 #define OPTIONAL
 
