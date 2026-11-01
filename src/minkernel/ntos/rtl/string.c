@@ -465,3 +465,30 @@ RtlCharToInteger(
     *Value = Result;
     return STATUS_SUCCESS;
 }
+
+LONG
+RtlCompareWcharCaseInsensitive(
+    PCWSTR String1,
+    PCWSTR String2
+)
+{
+    while (*String1 && *String2) {
+        WCHAR c1 = *String1;
+        WCHAR c2 = *String2;
+
+        if (c1 >= 'A' && c1 <= 'Z') c1 += ('a' - 'A');
+        if (c2 >= 'A' && c2 <= 'Z') c2 += ('a' - 'A');
+
+        if (c1 != c2) {
+            return (c1 < c2) ? -1 : 1;
+        }
+
+        String1++;
+        String2++;
+    }
+
+    if (*String1 == *String2) {
+        return 0;
+    }
+    return (*String1 < *String2) ? -1 : 1;
+}
