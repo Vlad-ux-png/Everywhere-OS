@@ -23,6 +23,7 @@ Environment:
 --*/
 
 #include "explorer.h"
+#include "ex.h"
 
 char shell_input[SHELL_INPUT_SIZE];
 int  shell_len = 0;
