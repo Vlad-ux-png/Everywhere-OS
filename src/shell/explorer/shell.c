@@ -30,6 +30,16 @@ int  shell_len = 0;
 char shell_output[256];
 int  shell_has_output = 0;
 
+VOID
+MkTestWorkerRoutine(
+    PVOID Parameter
+)
+{
+    static const uint8_t hello[] = "Hello, World!\n";
+    
+    EvryFsWriteFile("Test\\hello.txt", hello, 14);
+}
+
 /*++
 
 Routine Description:
@@ -125,15 +135,23 @@ void ShellExec(void) {
     } else if (StrEq(shell_input, "reboot")) {
         RebootSystem();
     } else if (StrEq(shell_input, "mktest")) {
-        static const uint8_t hello[] = "Hello, World!\n";
+        static WORK_QUEUE_ITEM TestWorkItem;
         const char* msg;
         int i = 0;
-        if (EvryFsWriteFile("Test\\hello.txt", hello, 14) == 0) {
-            msg = "Created Test\\hello.txt";
-        } else {
-            msg = "No disk found";
+
+        TestWorkItem.WorkerRoutine = MkTestWorkerRoutine;
+        TestWorkItem.Parameter = NULL;
+        TestWorkItem.List.Flink = NULL;
+        TestWorkItem.List.Blink = NULL;
+
+        ExQueueWorkItem(&TestWorkItem, DelayedWorkQueue);
+
+        msg = "Created Test\\hello.txt";
+
+        while (msg[i] && i < 63) { 
+            shell_output[i] = msg[i]; 
+            i++; 
         }
-        while (msg[i] && i < 63) { shell_output[i] = msg[i]; i++; }
         shell_output[i] = 0;
         shell_has_output = 1;
     }
