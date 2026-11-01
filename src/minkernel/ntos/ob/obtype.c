@@ -36,7 +36,8 @@ Arguments:
 
 Return Value:
 
-    Pointer to the newly created OBJECT_TYPE structure, or NULL on failure.
+    Status.
+    STATUS_SUCCESS - Object Descriptor Initialized Successfully.
 
 --*/
 static OBJECT_TYPE FileType;
