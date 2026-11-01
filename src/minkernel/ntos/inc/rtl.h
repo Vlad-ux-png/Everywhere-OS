@@ -233,6 +233,30 @@ RtlCharToInteger(
     PULONG Value
     );
 
+/*++
+
+Routine Description:
+
+    Compares two wide character strings case-insensitively.
+
+Arguments:
+
+    String1 - Supplies the first string.
+    String2 - Supplies the second string.
+
+Return Value:
+
+    0   - Strings are equal.
+    < 0 - String1 < String2.
+    > 0 - String1 > String2.
+
+--*/
+LONG
+RtlCompareWcharCaseInsensitive(
+    PCWSTR String1,
+    PCWSTR String2
+);
+
 /* -----------------------------------------------------------------------
  * Bitmap Primitives
  * ----------------------------------------------------------------------- */
