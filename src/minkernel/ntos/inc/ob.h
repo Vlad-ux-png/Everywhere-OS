@@ -1,14 +1,14 @@
 /*++
 
-Copyright (c) 2026  O&V Soff. All Rights Reserved.
+Copyright (c) 2026  O&V Soft. All Rights Reserved.
 
 Module Name:
 
-    ntstatus.h
+    ob.h
 
 Abstract:
 
-    Constant definitions for the NTSTATUS type.
+    Constant definitions and Routines for the Object Manager.
 
 Author:
 
