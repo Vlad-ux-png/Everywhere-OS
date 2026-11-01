@@ -39,8 +39,6 @@ ExInitSystem(
     RtlInitializeGenericTable(
         &ExpSystemTable,
         (PVOID)RtlGenericTableCompare,         
-        (PVOID)RtlGenericTableAllocate,
-        (PVOID)RtlGenericTableFree,   
         NULL                       
     );
 
