@@ -109,14 +109,15 @@ RTL_SRC = src/minkernel/ntos/rtl/movemem.c \
 EX_SRC = src/minkernel/ntos/ex/exinit.c \
          src/minkernel/ntos/ex/fmutex.c \
          src/minkernel/ntos/ex/lookasid.c \
-         src/minkernel/ntos/ex/luid.c
+         src/minkernel/ntos/ex/luid.c \
+         src/minkernel/ntos/ex/workitem.c
 
 # Object Manager (src/minkernel/ntos/ob)
 OB_SRC = src/minkernel/ntos/ob/obinit.c \
          src/minkernel/ntos/ob/obtype.c
 
 # Main entry
-MAIN_SRC = src/minkernel/ntos/init/kernel.c
+MAIN_SRC = src/minkernel/ntos/init/ki.c
 
 ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) $(OB_SRC)
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
@@ -203,7 +204,7 @@ $(DISK_IMG): $(MKDISK_EXE) $(FOLDER_ICO)
 	$(MKDISK_EXE) $(FOLDER_ICO) $@
 
 run: $(OS_ISO) $(DISK_IMG)
-	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware #-full-screen
+	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware -serial stdio -no-reboot #-full-screen
 
 $(TEST_ENTRY_OBJ): $(TEST_ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@

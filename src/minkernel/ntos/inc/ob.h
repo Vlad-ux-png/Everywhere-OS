@@ -61,7 +61,7 @@ ObInitSystem(
     VOID
 );
 
-POBJECT_TYPE
+NTSTATUS
 ObCreateObjectType(
     PCWSTR       TypeNameString,
     MM_POOL_TYPE PoolType

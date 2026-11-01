@@ -23,29 +23,11 @@ Environment:
 
 #include "../inc/ex.h"
 #include "../inc/ob.h"
+#include "kdcomp.h"
 
 extern LARGE_INTEGER ExpLuid;
 
 RTL_GENERIC_TABLE ExpSystemTable;
-
-LONG
-NTAPI
-TableCompare(
-    PRTL_GENERIC_TABLE Table,
-    PVOID First,
-    PVOID Second
-)
-{
-    ULONG key1 = *(PULONG)First;
-    ULONG key2 = *(PULONG)Second;
-
-    if (key1 < key2) {
-        return -1;
-    } else if (key1 > key2) {
-        return 1;
-    }
-    return 0; 
-}
 
 BOOLEAN
 ExInitSystem(
@@ -56,13 +38,15 @@ ExInitSystem(
 
     RtlInitializeGenericTable(
         &ExpSystemTable,
-        (PVOID)TableCompare,         
+        (PVOID)RtlGenericTableCompare,         
         (PVOID)RtlGenericTableAllocate,
         (PVOID)RtlGenericTableFree,   
         NULL                       
     );
 
     ObInitSystem();
+
+    ExpInitializeWorkItems();
     
     return TRUE;
 }

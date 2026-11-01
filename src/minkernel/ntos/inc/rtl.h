@@ -390,26 +390,6 @@ RtlIsGenericTableEmpty(
     );
 
 PVOID
-RtlInsertElementGenericTable(
-    PRTL_GENERIC_TABLE Table,
-    PVOID              Buffer,
-    ULONG              BufferSize,
-    PBOOLEAN           NewElement
-    );
-
-BOOLEAN
-RtlDeleteElementGenericTable(
-    PRTL_GENERIC_TABLE Table,
-    PVOID              Buffer
-    );
-
-PVOID
-RtlLookupElementGenericTable(
-    PRTL_GENERIC_TABLE Table,
-    PVOID              Buffer
-    );
-
-PVOID
 NTAPI
 RtlGenericTableAllocate(
     PRTL_GENERIC_TABLE Table,
@@ -421,6 +401,14 @@ NTAPI
 RtlGenericTableFree(
     PRTL_GENERIC_TABLE Table,
     PVOID Buffer
+    );
+
+LONG
+NTAPI
+RtlGenericTableCompare(
+    PRTL_GENERIC_TABLE Table,
+    PVOID First,
+    PVOID Second
     );
 
 #endif /* _RTL_H_ */

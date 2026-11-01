@@ -218,4 +218,36 @@ ExInitSystem(
     VOID
     );
 
+/* -----------------------------------------------------------------------
+ * Work Item Subsystem Primitives
+ * ----------------------------------------------------------------------- */
+
+typedef enum _WORK_QUEUE_TYPE {
+    CriticalWorkQueue,
+    DelayedWorkQueue,
+    MaximumWorkQueue
+} WORK_QUEUE_TYPE, *PWORK_QUEUE_TYPE;
+
+typedef struct _WORK_QUEUE_ITEM {
+    LIST_ENTRY List;
+    PVOID WorkerRoutine; 
+    PVOID Parameter;    
+} WORK_QUEUE_ITEM, *PWORK_QUEUE_ITEM;
+
+VOID
+ExpInitializeWorkItems(
+    VOID
+    );
+
+VOID
+ExQueueWorkItem(
+    IN PWORK_QUEUE_ITEM WorkItem,
+    IN WORK_QUEUE_TYPE QueueType
+    );
+
+VOID
+ExpProcessWorkItems(
+    VOID
+    );
+
 #endif /* _EX_H_ */

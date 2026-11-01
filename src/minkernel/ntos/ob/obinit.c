@@ -24,9 +24,6 @@ Environment:
 #include "../inc/mm.h"
 #include "../inc/ke.h"
 
-POBJECT_TYPE ObDirectoryType = NULL;
-POBJECT_TYPE ObSymbolicLinkType = NULL;
-
 /*++
 
 Routine Description:
@@ -48,7 +45,8 @@ ObInitSystem(
     VOID
 )
 {
-    ObDirectoryType = ObCreateObjectType(L"Directory", NonPagedPool);
-
-    ObSymbolicLinkType = ObCreateObjectType(L"SymbolicLink", NonPagedPool);
+    //
+    // Create File object type
+    //
+    ObCreateObjectType(L"File", NonPagedPool);
 }

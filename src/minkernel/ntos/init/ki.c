@@ -71,6 +71,8 @@ void KiStartupSystem(uint32_t* mbi) {
         uint32_t FrameStart = KernelGetTickCount();
         uint32_t FrameElapsed;
 
+        ExpProcessWorkItems();
+
         last_scancode = 0;
         char ch = KbdClassReadInput();
 

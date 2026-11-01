@@ -21,7 +21,6 @@ Environment:
 --*/
 
 #include "../inc/ob.h"
-#include "../inc/mm.h"
 
 /*++
 
@@ -40,24 +39,21 @@ Return Value:
     Pointer to the newly created OBJECT_TYPE structure, or NULL on failure.
 
 --*/
-POBJECT_TYPE
+static OBJECT_TYPE FileType;
+
+NTSTATUS
 ObCreateObjectType(
     PCWSTR       TypeNameString,
     MM_POOL_TYPE PoolType
 )
 {
-    POBJECT_TYPE ObjectType;
-
     (VOID)TypeNameString;
 
-    //
-    // Initialize basic object type tracking fields
-    //
-    ObjectType->PoolType                 = PoolType;
-    ObjectType->TotalNumberOfObjects     = 0;
-    ObjectType->TotalNumberOfHandles     = 0;
-    ObjectType->HighWaterNumberOfObjects = 0;
-    ObjectType->HighWaterNumberOfHandles = 0;
+    FileType.PoolType                 = PoolType;
+    FileType.TotalNumberOfObjects     = 0;
+    FileType.TotalNumberOfHandles     = 0;
+    FileType.HighWaterNumberOfObjects = 0;
+    FileType.HighWaterNumberOfHandles = 0;
 
-    return ObjectType;
+    return STATUS_SUCCESS;
 }
