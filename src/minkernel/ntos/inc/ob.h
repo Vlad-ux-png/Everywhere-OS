@@ -67,4 +67,9 @@ ObCreateObjectType(
     MM_POOL_TYPE PoolType
 );
 
+POBJECT_TYPE
+ObReferenceObjectTypeByName(
+    PCWSTR TypeNameString
+);
+
 #endif // _OB_H_
