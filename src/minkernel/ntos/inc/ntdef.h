@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Basic type definitions and macros for the NT-like kernel.
+    Basic type definitions and macros.
 
 Author:
 
