@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -20,6 +21,7 @@ Environment:
 
 --*/
 
+#include "../inc/ntdef.h"
 #include "../inc/rtl.h"
 
 /*
@@ -32,13 +34,21 @@ RtlRandom(
     PULONG Seed
     )
 {
+    ULONGLONG Temp;
     ULONG NewSeed;
 
     if (Seed == NULL) {
         return 0;
     }
 
-    NewSeed = (*Seed * 2147001325UL + 715136305UL) & 0x7FFFFFFFUL;
+    if (*Seed == 0) {
+        *Seed = 0x1337CAFEUL; 
+    }
+
+    Temp = (ULONGLONG)(*Seed) * 2147001325UL + 715136305UL;
+    
+    NewSeed = (ULONG)(Temp & 0x7FFFFFFFUL);
     *Seed = NewSeed;
+    
     return NewSeed;
 }

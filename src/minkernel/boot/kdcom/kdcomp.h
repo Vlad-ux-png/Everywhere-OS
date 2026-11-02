@@ -17,6 +17,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -214,6 +215,8 @@ int      CpDoesPortExist(uint16_t Address);
 uint8_t  CpReadLsr(PCPPORT Port, uint8_t Waiting);
 void     CpPutByte(PCPPORT Port, uint8_t Byte);
 uint16_t CpGetByte(PCPPORT Port, uint8_t *Byte, int WaitForByte);
+void     KdComPortWriteString(const char *String);
+void     KdComPortWriteHex32(uint32_t Value);
 
 /* Public COM transport interface -- defined in ixkdcom.c, declared in ke.h */
 extern CPPORT KdComPort;

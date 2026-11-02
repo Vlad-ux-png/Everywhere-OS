@@ -15,6 +15,7 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 

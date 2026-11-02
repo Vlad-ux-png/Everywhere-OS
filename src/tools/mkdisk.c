@@ -22,6 +22,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -34,7 +35,7 @@ Environment:
 #include <string.h>
 #include <stdint.h>
 
-//## CONSTANTS STANDARD, (must match base/fs/evryfs/evryfs.h)!!! ##\\
+//## CONSTANTS STANDARD, (must match base/fs/evryfs/evryfs.h)!!! ##
 
 #define EVRYFS_MAGIC        0x45565259U
 #define EVRYFS_VERSION      1
@@ -70,7 +71,7 @@ typedef struct {
 
 #pragma pack(pop)
 
-//## EP ( da "ENTRY POINT") ##\\
+//## EP ( da "ENTRY POINT") ##
 
 int main(int argc, char* argv[])
 {

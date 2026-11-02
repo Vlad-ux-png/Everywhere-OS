@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -22,7 +23,7 @@ Environment:
 
 #include "explorer.h"
 
-//## Contants ##\\ 
+//## Constants ##
 
 #define FOLDER_ICO_FS_NAME  "Everywhere\\Res\\F\\folder.ico"
 
@@ -31,7 +32,7 @@ Environment:
 #define ICON_W  16
 #define ICON_H  16
 
-//## Module private state ##\\
+//## Module private state ##
 
 static uint8_t s_ico_buf[FOLDER_ICO_MAXSIZE];
 
@@ -43,7 +44,7 @@ static int s_icon_loaded = 0;
 
 static uint8_t s_vga_pal[256 * 3];
 
-//## Internal Helpers ##\\
+//## Internal Helpers ##
 
 /*++
 
@@ -103,7 +104,7 @@ static uint32_t IcoU32(const uint8_t* b, int off)
          | ((uint32_t)b[off + 3] << 24);
 }
 
-//## Public API ##\\
+//## Public API ##
 
 /*++
 
@@ -131,7 +132,7 @@ void IconInit(void)
     s_icon_loaded = 0;
 
     int len = EvryFsReadFile(FOLDER_ICO_FS_NAME, s_ico_buf, FOLDER_ICO_MAXSIZE);
-    if (len < 22) return;               // too short
+    if (len < 22) return; // too small
 
     if (IcoU16(s_ico_buf, 2) != 1) return;//NOT TYPE_ICON
     int count = (int)IcoU16(s_ico_buf, 4);

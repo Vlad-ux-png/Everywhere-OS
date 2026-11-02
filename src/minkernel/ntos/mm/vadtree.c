@@ -20,6 +20,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -101,7 +102,7 @@ MiRemoveVad(
     )
 {
     MiRemoveNode(Vad, VadRoot);
-    MmFreePool(Vad, 'daVM');
+    MmFreePool(Vad, 0x6461564D); // 'daVM'
 }
 
 /* -----------------------------------------------------------------------

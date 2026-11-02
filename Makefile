@@ -7,15 +7,26 @@ NASM    = nasm
 
 HOST_CC = gcc
 
-CFLAGS  = -c -ffreestanding -fno-builtin -fno-stack-protector -nostdlib \
-          -m32 -Wall -Wextra \
+CFLAGS  = -m32 -ffreestanding \
+          -fno-stack-protector \
+          -fno-leading-underscore \
+          -fshort-wchar \
+          -mgeneral-regs-only \
+          -mno-red-zone -c \
+          -fno-pic -fno-asynchronous-unwind-tables \
+          -fno-strict-aliasing -mno-sse -O2 \
+          -Wno-unused-parameter -Wno-unused-function \
+          -Wno-unused-variable \
+		  -Wno-unused-but-set-variable -Wno-unused-value \
+          -Wno-missing-field \
           -I./src/minkernel/ntos/inc \
           -I./src/minkernel/ntos/mm \
           -I./src/minkernel/boot/kdcom \
           -I./src/shell/explorer \
           -I./src/minkernel/fs/evryfs \
           -I./src/onecore/drivers/input/keyboard/kbdclass \
-          -I./src/onecore/drivers/input/mouse/mouclass
+          -I./src/onecore/drivers/input/mouse/mouclass \
+          -I./src/minkernel/ntos/ob 
 
 LDFLAGS = -m elf_i386 -T src/minkernel/ntos/init/kernel.ld
 ASFLAGS = -f elf32
@@ -91,18 +102,24 @@ MOUCLASS_SRC = src/onecore/drivers/input/mouse/mouclass/mouclass.c
 RTL_SRC = src/minkernel/ntos/rtl/movemem.c \
           src/minkernel/ntos/rtl/string.c \
           src/minkernel/ntos/rtl/bitmapex.c \
-          src/minkernel/ntos/rtl/random.c
+          src/minkernel/ntos/rtl/random.c \
+          src/minkernel/ntos/rtl/gentable.c
 
 # Executive (src/minkernel/ntos/ex)
 EX_SRC = src/minkernel/ntos/ex/exinit.c \
          src/minkernel/ntos/ex/fmutex.c \
          src/minkernel/ntos/ex/lookasid.c \
-         src/minkernel/ntos/ex/luid.c
+         src/minkernel/ntos/ex/luid.c \
+         src/minkernel/ntos/ex/workitem.c
+
+# Object Manager (src/minkernel/ntos/ob)
+OB_SRC = src/minkernel/ntos/ob/obinit.c \
+         src/minkernel/ntos/ob/obtype.c
 
 # Main entry
-MAIN_SRC = src/minkernel/ntos/init/kernel.c
+MAIN_SRC = src/minkernel/ntos/init/ki.c
 
-ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC)
+ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) $(OB_SRC)
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
 
 KERNEL_ELF = $(BUILD)/kernel.elf
@@ -125,6 +142,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/init)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ke)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/rtl)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm/tests)
@@ -136,7 +154,7 @@ $(shell mkdir -p $(BUILD)/src/onecore/drivers/input/mouse/mouclass)
 $(shell mkdir -p $(BIN))
 $(shell mkdir -p $(ISO)/boot/grub)
 
-all: $(OS_ISO)
+all: $(OS_ISO) $(DISK_IMG)
 
 $(ENTRY_OBJ): $(ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@
@@ -186,7 +204,7 @@ $(DISK_IMG): $(MKDISK_EXE) $(FOLDER_ICO)
 	$(MKDISK_EXE) $(FOLDER_ICO) $@
 
 run: $(OS_ISO) $(DISK_IMG)
-	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) #-full-screen
+	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware -serial stdio -no-reboot #-full-screen
 
 $(TEST_ENTRY_OBJ): $(TEST_ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@

@@ -14,7 +14,8 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
-
+    Vlad Lymar <ggcc98765432110@gmail.com>
+    
 Environment:
 
     Userspace
@@ -47,7 +48,7 @@ void HandleTaskbarClick(void) {
 
     int x = 120;
     if (ShellWin.visible && ShellWin.minimized) {
-        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 40, 10)) {
+        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 42, 10)) {
             ShellWin.minimized = 0;
             active_window = 0;
             return;
@@ -55,7 +56,7 @@ void HandleTaskbarClick(void) {
         x += 44;
     }
     if (NotesWin.visible && NotesWin.minimized) {
-        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 40, 10)) {
+        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 42, 10)) {
             NotesWin.minimized = 0;
             active_window = 1;
             return;
@@ -63,7 +64,7 @@ void HandleTaskbarClick(void) {
         x += 44;
     }
     if (SnakeWin.visible && SnakeWin.minimized) {
-        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 40, 10)) {
+        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 42, 10)) {
             SnakeWin.minimized = 0;
             active_window = 2;
             return;
@@ -71,7 +72,7 @@ void HandleTaskbarClick(void) {
         x += 44;
     }
     if (FilesWin.visible && FilesWin.minimized) {
-        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 40, 10)) {
+        if (PointInRect(mouse_x, mouse_y, x, SCR_H - 11, 42, 10)) {
             FilesWin.minimized = 0;
             active_window = 3;
             return;
@@ -102,22 +103,22 @@ void DrawTaskbar(void) {
 
     int x = 120;
     if (ShellWin.visible && ShellWin.minimized) {
-        FillRect(x, SCR_H - 11, 40, 10, 0x03);
+        FillRect(x, SCR_H - 11, 42, 10, 0x03);
         DrawString(x + 2, SCR_H - 10, "Shell", 0x0F);
         x += 44;
     }
     if (NotesWin.visible && NotesWin.minimized) {
-        FillRect(x, SCR_H - 11, 40, 10, 0x03);
+        FillRect(x, SCR_H - 11, 42, 10, 0x03);
         DrawString(x + 2, SCR_H - 10, "Notes", 0x0F);
         x += 44;
     }
     if (SnakeWin.visible && SnakeWin.minimized) {
-        FillRect(x, SCR_H - 11, 40, 10, 0x03);
+        FillRect(x, SCR_H - 11, 42, 10, 0x03);
         DrawString(x + 2, SCR_H - 10, "Snake", 0x0F);
         x += 44;
     }
     if (FilesWin.visible && FilesWin.minimized) {
-        FillRect(x, SCR_H - 11, 40, 10, 0x03);
+        FillRect(x, SCR_H - 11, 42, 10, 0x03);
         DrawString(x + 2, SCR_H - 10, "Files", 0x0F);
         x += 44;
     }

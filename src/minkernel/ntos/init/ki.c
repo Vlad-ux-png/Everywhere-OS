@@ -9,12 +9,13 @@ Module Name:
 Abstract:
 
     Main entry point for the GUI kernel. All subsystems are now split
-    into base\ntos\ke\* (kernel) and shell\explorer\* (userspace).
+    into src\minkernel\ntos\ke\* (kernel) and src\shell\explorer\* (userspace).
 
 Author(s):
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -45,7 +46,7 @@ Return Value:
 
 --*/
 
-void kernelMain(uint32_t* mbi) {
+void KiStartupSystem(uint32_t* mbi) {
     KdComPortInitialize();
     MmInit(mbi);
     ExInitSystem();
@@ -58,6 +59,7 @@ void kernelMain(uint32_t* mbi) {
     IconInit();
 
     DrawBootScreen();
+    FlipBuffers();
     {
         uint32_t BootEnd = KernelGetTickCount() + 2000;
         while (KernelGetTickCount() < BootEnd) {
@@ -69,11 +71,10 @@ void kernelMain(uint32_t* mbi) {
         uint32_t FrameStart = KernelGetTickCount();
         uint32_t FrameElapsed;
 
+        ExpProcessWorkItems();
+
         last_scancode = 0;
         char ch = KbdClassReadInput();
-        if (ch == 27) {
-            RebootSystem();
-        }
 
         /* Route keyboard input to the active window */
         HandleKeyboardInput(ch);
@@ -98,15 +99,28 @@ void kernelMain(uint32_t* mbi) {
         UpdateWindowPhysics(&FilesWin);
 
         DrawDesktop();
-        DrawWindowFrame(&ShellWin);
-        DrawWindowFrame(&NotesWin);
-        DrawWindowFrame(&SnakeWin);
-        DrawWindowFrame(&FilesWin);
 
-        ShellDraw();
-        NotesDraw();
-        SnakeDraw();
-        FilesDraw();
+        WINDOW* wins[4] = { &ShellWin, &NotesWin, &SnakeWin, &FilesWin };
+
+        WINDOW* active_p = wins[active_window];
+        int dest = 0;
+        for (int i = 0; i < 4; i++) {
+            if (i != active_window) {
+                wins[dest++] = wins[i];
+            }
+        }
+        wins[3] = active_p;
+
+        for (int i = 0; i < 4; i++) {
+            DrawWindowFrame(wins[i]);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (wins[i] == &ShellWin) ShellDraw();
+            else if (wins[i] == &NotesWin) NotesDraw();
+            else if (wins[i] == &SnakeWin) SnakeDraw();
+            else if (wins[i] == &FilesWin) FilesDraw();
+        }
 
         DrawTaskbar();
         DrawMouseCursor();

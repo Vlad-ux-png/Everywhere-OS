@@ -14,6 +14,7 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -21,15 +22,19 @@ Environment:
 
 --*/
 
+#include "ntdef.h"
 #include "explorer.h"
+#include "rtl.h"
 
 int snake_x[SNAKE_MAX];
 int snake_y[SNAKE_MAX];
-int snake_len = 5;
+int snake_len = 25;
 int snake_dx = 1;
 int snake_dy = 0;
 int food_x = 20;
 int food_y = 10;
+
+static ULONG rand_seed = 0; 
 
 /*++
 
@@ -48,9 +53,10 @@ Return Value:
 --*/
 
 void SnakeInit(void) {
+    rand_seed = KernelGetTickCount();
     for (int i = 0; i < snake_len; i++) {
-        snake_x[i] = 10 - i;
-        snake_y[i] = 10;
+        snake_x[i] = 30 - i;
+        snake_y[i] = 30;
     }
 }
 
@@ -98,10 +104,13 @@ void SnakeStep(void) {
     if (snake_x[0] > SnakeWin.w - 10) snake_x[0] = SnakeWin.w - 10;
     if (snake_y[0] > SnakeWin.h - 20) snake_y[0] = SnakeWin.h - 20;
 
-    if (snake_x[0] == food_x && snake_y[0] == food_y) {
-        if (snake_len < SNAKE_MAX) snake_len++;
-        food_x = (food_x * 7 + 13) % (SnakeWin.w - 10);
-        food_y = (food_y * 5 + 11) % (SnakeWin.h - 20);
+    for (int i = 0; i < 4; i++) {
+        if (snake_x[0] == food_x && snake_y[0] == food_y) {
+            if (snake_len < SNAKE_MAX) snake_len++;
+    
+            food_x = RtlRandom(&rand_seed) % (SnakeWin.w - 10);
+            food_y = RtlRandom(&rand_seed) % (SnakeWin.h - 20);
+        }
     }
 }
 
@@ -131,6 +140,8 @@ void SnakeDraw(void) {
                  SnakeWin.y + 15 + snake_y[i], 0x0A);
     }
 
-    PutPixel(SnakeWin.x + 5 + food_x,
-             SnakeWin.y + 15 + food_y, 0x04);
+    for (int i = 0; i < 4; i++) {
+        PutPixel(SnakeWin.x + 5 + food_x + (i % 2),
+                 SnakeWin.y + 15 + food_y + (i / 2), 0x04);
+    }
 }

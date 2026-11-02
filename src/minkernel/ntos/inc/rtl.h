@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -23,8 +24,8 @@ Environment:
 #ifndef _RTL_H_
 #define _RTL_H_
 
-#include "mm.h"
 #include "ntstatus.h"
+#include "mm.h"
 
 /* -----------------------------------------------------------------------
  * Character and String Types
@@ -233,6 +234,30 @@ RtlCharToInteger(
     PULONG Value
     );
 
+/*++
+
+Routine Description:
+
+    Compares two wide character strings case-insensitively.
+
+Arguments:
+
+    String1 - Supplies the first string.
+    String2 - Supplies the second string.
+
+Return Value:
+
+    0   - Strings are equal.
+    < 0 - String1 < String2.
+    > 0 - String1 > String2.
+
+--*/
+LONG
+RtlCompareWcharCaseInsensitive(
+    PCWSTR String1,
+    PCWSTR String2
+);
+
 /* -----------------------------------------------------------------------
  * Bitmap Primitives
  * ----------------------------------------------------------------------- */
@@ -321,6 +346,76 @@ RtlAreBitsSet(
 ULONG
 RtlRandom(
     PULONG Seed
+    );
+
+/* -----------------------------------------------------------------------
+ * Generic Table Primitives
+ * ----------------------------------------------------------------------- */
+
+typedef struct _RTL_GENERIC_TABLE {
+    PVOID TableRoot;
+    LIST_ENTRY LLHead;
+    PVOID LastElementFound;
+    ULONG LastIndexFound;
+    ULONG NumberOfElements;
+    PVOID CompareRoutine;
+    PVOID TableContext;
+    ULONG LastElementIndex;
+} RTL_GENERIC_TABLE, *PRTL_GENERIC_TABLE;
+
+typedef struct _RTL_TABLE_NODE {
+    struct _RTL_TABLE_NODE *Left;
+    struct _RTL_TABLE_NODE *Right;
+    struct _RTL_TABLE_NODE *Parent;
+    ULONG                   BalanceFactor; 
+    CHAR                    Buffer[1];
+} RTL_TABLE_NODE, *PRTL_TABLE_NODE;
+
+typedef 
+PVOID
+(*PRTL_GENERIC_ALLOCATE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    CLONG ByteSize
+);
+
+typedef 
+VOID
+(*PRTL_GENERIC_FREE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    PVOID Buffer
+);
+
+typedef 
+LONG
+(*PRTL_GENERIC_COMPARE_ROUTINE)(
+    struct _RTL_GENERIC_TABLE *Table,
+    PVOID FirstStruct,
+    PVOID SecondStruct
+);
+
+VOID
+RtlInitializeGenericTable(
+    PRTL_GENERIC_TABLE          Table,
+    PRTL_GENERIC_COMPARE_ROUTINE CompareRoutine,
+    PVOID                       TableContext
+    );
+
+ULONG
+RtlNumberGenericTableElements(
+    PRTL_GENERIC_TABLE Table
+    );
+
+BOOLEAN
+RtlIsGenericTableEmpty(
+    PRTL_GENERIC_TABLE Table
+    );
+
+LONG
+NTAPI
+RtlGenericTableCompare(
+    PRTL_GENERIC_TABLE Table,
+    PVOID First,
+    PVOID Second
     );
 
 #endif /* _RTL_H_ */

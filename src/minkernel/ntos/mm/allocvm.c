@@ -17,6 +17,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -122,7 +123,7 @@ MmAllocateVirtualMemory(
         //
         // Create and insert the VAD.
         //
-        Vad = (PMMVAD)MmAllocatePool(NonPagedPool, sizeof(MMVAD), 'daVM');
+        Vad = (PMMVAD)MmAllocatePool(NonPagedPool, sizeof(MMVAD), 0x6461564D); // 'daVM'
         if (Vad == NULL) {
             return STATUS_NO_MEMORY;
         }
@@ -139,7 +140,7 @@ MmAllocateVirtualMemory(
 
         Status = MiInsertVad(Vad, &MmSystemCacheWs.VadRoot);
         if (!NT_SUCCESS(Status)) {
-            MmFreePool(Vad, 'daVM');
+            MmFreePool(Vad, 0x6461564D); // 'daVM'
             return Status;
         }
 

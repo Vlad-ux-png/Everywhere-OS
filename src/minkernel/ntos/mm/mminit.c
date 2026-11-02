@@ -34,6 +34,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -255,6 +256,8 @@ MiBuildPfnDatabase(
     // Pool begins immediately after the database.
     //
     MiNonPagedPoolStart = MI_POOL_BASE_MIN + PfnSizeAligned;
+
+    MiNonPagedPoolEnd = MiNonPagedPoolStart + (16UL * 1024UL * 1024UL);
 }
 
 /* -----------------------------------------------------------------------

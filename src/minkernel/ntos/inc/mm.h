@@ -16,6 +16,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -62,6 +63,8 @@ typedef USHORT     *PUSHORT;
 typedef UCHAR      *PUCHAR;
 typedef CHAR       *PCHAR;
 typedef PVOID      *PPVOID;
+typedef BOOLEAN    *PBOOLEAN;
+typedef ULONG       CLONG;
 
 typedef union _LARGE_INTEGER {
     struct {
@@ -500,6 +503,11 @@ typedef PPOOL_HEADER PMM_POOL_HEADER;
 
 #define MM_POOL_HEADER_SIZE  ((ULONG)sizeof(POOL_HEADER))
 #define MM_POOL_MIN_BLOCK    (MM_POOL_HEADER_SIZE + POOL_BLOCK_SIZE)
+
+#ifndef CONTAINING_RECORD
+#define CONTAINING_RECORD(address, type, field) \
+    ((type *)((PUCHAR)(address) - (ULONG_PTR)(&((type *)0)->field)))
+#endif
 
 /* -----------------------------------------------------------------------
  * Exported globals

@@ -17,6 +17,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -103,8 +104,8 @@ MmFreeVirtualMemory(
         //
         // Decommit the entire VAD range.
         //
-        Base   = MI_VPN_TO_VA_ENDING(Vad->StartingVpn);
-        EndVa  = MI_VPN_TO_VA_ENDING(Vad->EndingVpn);
+        Base   = (ULONG)MI_VPN_TO_VA_ENDING(Vad->StartingVpn);
+        EndVa  = (ULONG)MI_VPN_TO_VA_ENDING(Vad->EndingVpn);
         Size   = EndVa - Base + 1;
         *BaseAddress = (PVOID)Base;
         if (RegionSize != NULL) {

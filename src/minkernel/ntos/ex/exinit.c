@@ -13,6 +13,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -21,8 +22,12 @@ Environment:
 --*/
 
 #include "../inc/ex.h"
+#include "../inc/ob.h"
+#include "kdcomp.h"
 
 extern LARGE_INTEGER ExpLuid;
+
+RTL_GENERIC_TABLE ExpSystemTable;
 
 BOOLEAN
 ExInitSystem(
@@ -30,5 +35,16 @@ ExInitSystem(
     )
 {
     ExpLuid.QuadPart = 1000;
+
+    RtlInitializeGenericTable(
+        &ExpSystemTable,
+        (PVOID)RtlGenericTableCompare,         
+        NULL                       
+    );
+
+    ObInitSystem();
+
+    ExpInitializeWorkItems();
+    
     return TRUE;
 }

@@ -19,6 +19,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -28,6 +29,11 @@ Environment:
 --*/
 
 #include "kdcomp.h"
+
+static const char KdHexDigits[16] = {
+    '0','1','2','3','4','5','6','7',
+    '8','9','A','B','C','D','E','F'
+};
 
 /*
  * KdComPort
@@ -598,5 +604,19 @@ KdComPortWriteString(
         }
         CpPutByte(&KdComPort, (uint8_t)*String);
         String++;
+    }
+}
+
+void
+KdComPortWriteHex32(
+    uint32_t Value
+    )
+{
+    int i;
+
+    CpPutByte(&KdComPort, '0');
+    CpPutByte(&KdComPort, 'x');
+    for (i = 28; i >= 0; i -= 4) {
+        CpPutByte(&KdComPort, (uint8_t)KdHexDigits[(Value >> i) & 0xFU]);
     }
 }

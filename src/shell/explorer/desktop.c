@@ -14,7 +14,8 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
-
+    Vlad Lymar <ggcc98765432110@gmail.com>
+    
 Environment:
 
     User-mode
@@ -64,7 +65,7 @@ Return Value:
 
 void DrawBootScreen(void) {
     FillRect(0, 0, SCR_W, SCR_H, 0x00);
-    DrawString(10, 80,
+    DrawString(168, 168,
         "Why Go Anywhere When You Are Everywhere?\nEverywhere OS",
         0x0F);
 }
