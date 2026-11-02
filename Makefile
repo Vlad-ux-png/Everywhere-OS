@@ -114,7 +114,9 @@ EX_SRC = src/minkernel/ntos/ex/exinit.c \
 
 # Object Manager (src/minkernel/ntos/ob)
 OB_SRC = src/minkernel/ntos/ob/obinit.c \
-         src/minkernel/ntos/ob/obtype.c
+         src/minkernel/ntos/ob/obtype.c \
+         src/minkernel/ntos/ob/obcreate.c \
+         src/minkernel/ntos/ob/obref.c
 
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/ki.c
@@ -204,7 +206,7 @@ $(DISK_IMG): $(MKDISK_EXE) $(FOLDER_ICO)
 	$(MKDISK_EXE) $(FOLDER_ICO) $@
 
 run: $(OS_ISO) $(DISK_IMG)
-	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware -serial stdio -no-reboot #-full-screen
+	qemu-system-i386 -cdrom $(OS_ISO) -hda $(DISK_IMG) -vga vmware #-full-screen
 
 $(TEST_ENTRY_OBJ): $(TEST_ENTRY_SRC)
 	$(NASM) $(ASFLAGS) $< -o $@

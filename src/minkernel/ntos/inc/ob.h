@@ -30,6 +30,9 @@ Environment:
 
 struct _OBJECT_TYPE;
 
+#define MAXIMUM_OBJECT_PAYLOAD_SIZE 256
+#define MAX_OBJECTS 12
+
 typedef struct _OBJECT_HEADER {
     LONG PointerCount;          
     LONG HandleCount;       
@@ -52,6 +55,14 @@ typedef struct _OBJECT_TYPE {
     ULONG PoolType;         
 } OBJECT_TYPE, *POBJECT_TYPE;
 
+typedef struct _OBJECT_SLOT {
+    BOOLEAN       InUse;
+    OBJECT_HEADER Header;
+    UCHAR         Payload[MAXIMUM_OBJECT_PAYLOAD_SIZE];
+} _OBJECT_SLOT, *POBJECT_SLOT;
+
+extern _OBJECT_SLOT ObpStaticObjectTable[MAX_OBJECTS];
+
 /* -----------------------------------------------------------------------
  * Object Manager Functions Primitives
  * ----------------------------------------------------------------------- */
@@ -59,17 +70,34 @@ typedef struct _OBJECT_TYPE {
 VOID
 ObInitSystem(
     VOID
-);
+    );
 
 NTSTATUS
 ObCreateObjectType(
     PCWSTR       TypeNameString,
     MM_POOL_TYPE PoolType
-);
+    );
 
 POBJECT_TYPE
 ObReferenceObjectTypeByName(
     PCWSTR TypeNameString
-);
+    );
+
+NTSTATUS
+ObCreateObject(
+    POBJECT_TYPE ObjectType,
+    ULONG        ObjectSize,
+    PVOID       *Object
+    );
+
+LONG
+ObReferenceObject(
+    PVOID Object
+    );
+
+LONG
+ObDereferenceObject(
+    PVOID Object
+    );
 
 #endif // _OB_H_
