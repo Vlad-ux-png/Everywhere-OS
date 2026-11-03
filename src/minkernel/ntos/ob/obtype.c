@@ -8,9 +8,9 @@ Module Name:
 
 Abstract:
 
-    Object type management and creation routines.
+    Dynamic object type management and creation routines.
 
-Author:
+Author(s):
 
     Vlad Lymar <ggcc98765432110@gmail.com>
 
@@ -19,15 +19,34 @@ Environment:
     Kernel-mode only.
 
 --*/
-#include "../inc/ob.h"
 
-static OBJECT_TYPE FileType;
+#include "../inc/ob.h"
+#include "../inc/mm.h"
+#include "../inc/rtl.h"
+
+//
+// Define a tag for object type allocations
+//
+#define OB_TYPE_POOL_TAG  0x4F626A54 // 'ObjT'
+
+//
+// Internal node structure for the object type list
+//
+typedef struct _OBJECT_TYPE_NODE {
+    OBJECT_TYPE               TypeInfo;
+    struct _OBJECT_TYPE_NODE* Next;
+} OBJECT_TYPE_NODE, *POBJECT_TYPE_NODE;
+
+//
+// Head of the registered object types list
+//
+static POBJECT_TYPE_NODE ObpTypeListHead = NULL;
 
 /*++
 
 Routine Description:
 
-    Creates and initializes a system object type descriptor.
+    Creates and initializes a system object type descriptor dynamically.
 
 Arguments:
 
@@ -40,24 +59,42 @@ Return Value:
     NTSTATUS - Status of the operation.
 
 --*/
-
 NTSTATUS
 ObCreateObjectType(
     PCWSTR       TypeNameString,
     MM_POOL_TYPE PoolType
 )
 {
+    POBJECT_TYPE_NODE NewNode;
+
     if (TypeNameString == NULL) {
         return STATUS_INVALID_PARAMETER;
     }
 
-    RtlInitUnicodeString(&FileType.TypeName, TypeNameString);
+    //
+    // Allocate memory for the new object type node
+    //
+    NewNode = (POBJECT_TYPE_NODE)MmAllocatePool(PoolType, sizeof(OBJECT_TYPE_NODE), OB_TYPE_POOL_TAG);
+    if (NewNode == NULL) {
+        return STATUS_INSUFFICIENT_RESOURCES;
+    }
 
-    FileType.PoolType                 = PoolType;
-    FileType.TotalNumberOfObjects     = 0;
-    FileType.TotalNumberOfHandles     = 0;
-    FileType.HighWaterNumberOfObjects = 0;
-    FileType.HighWaterNumberOfHandles = 0;
+    //
+    // Initialize the object type fields
+    //
+    RtlInitUnicodeString(&NewNode->TypeInfo.TypeName, TypeNameString);
+
+    NewNode->TypeInfo.PoolType                 = PoolType;
+    NewNode->TypeInfo.TotalNumberOfObjects     = 0;
+    NewNode->TypeInfo.TotalNumberOfHandles     = 0;
+    NewNode->TypeInfo.HighWaterNumberOfObjects = 0;
+    NewNode->TypeInfo.HighWaterNumberOfHandles = 0;
+
+    //
+    // Insert the new type into the global object types list
+    //
+    NewNode->Next   = ObpTypeListHead;
+    ObpTypeListHead = NewNode;
 
     return STATUS_SUCCESS;
 }
@@ -67,7 +104,7 @@ ObCreateObjectType(
 Routine Description:
 
     Retrieves a system object type descriptor by its name, searching
-    among the registered object types.
+    through the dynamically registered object types list.
 
 Arguments:
 
@@ -83,12 +120,21 @@ ObReferenceObjectTypeByName(
     PCWSTR TypeNameString
 )
 {
+    POBJECT_TYPE_NODE Current;
+
     if (TypeNameString == NULL) {
         return NULL;
     }
 
-    if (RtlCompareWcharCaseInsensitive(TypeNameString, L"File") == 0) {
-        return &FileType;
+    Current = ObpTypeListHead;
+    while (Current != NULL) {
+        //
+        // Compare case-insensitively using RTL string helpers
+        //
+        if (RtlCompareWcharCaseInsensitive(TypeNameString, Current->TypeInfo.TypeName.Buffer) == 0) {
+            return &Current->TypeInfo;
+        }
+        Current = Current->Next;
     }
 
     return NULL;

@@ -28,10 +28,9 @@ Environment:
 #include "ntdef.h"
 #include "rtl.h"
 
-struct _OBJECT_TYPE;
-
 #define MAXIMUM_OBJECT_PAYLOAD_SIZE 256
-#define MAX_OBJECTS 24
+
+struct _OBJECT_TYPE;
 
 typedef struct _OBJECT_HEADER {
     LONG PointerCount;          
@@ -54,14 +53,6 @@ typedef struct _OBJECT_TYPE {
     ULONG HighWaterNumberOfHandles;
     ULONG PoolType;         
 } OBJECT_TYPE, *POBJECT_TYPE;
-
-typedef struct _OBJECT_SLOT {
-    BOOLEAN       InUse;
-    OBJECT_HEADER Header;
-    UCHAR         Payload[MAXIMUM_OBJECT_PAYLOAD_SIZE];
-} _OBJECT_SLOT, *POBJECT_SLOT;
-
-extern _OBJECT_SLOT ObpObjectTable[MAX_OBJECTS];
 
 /* -----------------------------------------------------------------------
  * Object Manager Functions Primitives

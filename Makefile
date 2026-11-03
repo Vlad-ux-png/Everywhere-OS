@@ -26,7 +26,8 @@ CFLAGS  = -m32 -ffreestanding \
           -I./src/minkernel/fs/evryfs \
           -I./src/onecore/drivers/input/keyboard/kbdclass \
           -I./src/onecore/drivers/input/mouse/mouclass \
-          -I./src/minkernel/ntos/ob 
+          -I./src/minkernel/ntos/ob \
+          -I./src/minkernel/ntos/io
 
 LDFLAGS = -m elf_i386 -T src/minkernel/ntos/init/kernel.ld
 ASFLAGS = -f elf32
@@ -103,7 +104,8 @@ RTL_SRC = src/minkernel/ntos/rtl/movemem.c \
           src/minkernel/ntos/rtl/string.c \
           src/minkernel/ntos/rtl/bitmapex.c \
           src/minkernel/ntos/rtl/random.c \
-          src/minkernel/ntos/rtl/gentable.c
+          src/minkernel/ntos/rtl/gentable.c \
+          src/minkernel/ntos/rtl/heap.c
 
 # Executive (src/minkernel/ntos/ex)
 EX_SRC = src/minkernel/ntos/ex/exinit.c \
@@ -242,6 +244,7 @@ $(TEST_ELF): $(TEST_ENTRY_OBJ) \
              $(BUILD)/src/minkernel/ntos/mm/hypermap.o \
              $(BUILD)/src/minkernel/ntos/mm/buildmdl.o \
              $(BUILD)/src/minkernel/ntos/mm/zeropage.o \
+             $(BUILD)/src/minkernel/ntos/rtl/heap.o \
              $(TEST_MMTEST_OBJ)
 	$(LD) $(LDFLAGS) $^ -o $@
 

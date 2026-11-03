@@ -418,4 +418,24 @@ RtlGenericTableCompare(
     PVOID Second
     );
 
+/* -----------------------------------------------------------------------
+ * Heap Primitives
+ * ----------------------------------------------------------------------- */
+
+VOID
+RtlInitializeHeap(
+    PVOID HeapMemory,
+    ULONG HeapSize
+);
+
+PVOID
+RtlAllocateHeap(
+    ULONG NumberOfBytes
+);
+
+VOID
+RtlFreeHeap(
+    PVOID MemPointer
+);
+
 #endif /* _RTL_H_ */

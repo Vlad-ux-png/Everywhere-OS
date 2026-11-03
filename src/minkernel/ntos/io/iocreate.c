@@ -4,7 +4,7 @@ Copyright (c) 2026  O&V Soft. All Rights Reserved.
 
 Module Name:
 
-    create.c (or file.c)
+    create.c
 
 Abstract:
 

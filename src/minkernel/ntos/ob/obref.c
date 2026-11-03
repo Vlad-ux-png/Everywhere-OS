@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Object reference counting and cleanup routines using static slots.
+    Object reference counting and routines using dynamic pool allocation.
 
 Author(s):
 
@@ -21,6 +21,13 @@ Environment:
 --*/
 
 #include "../inc/ob.h"
+#include "../inc/mm.h"
+#include "../inc/rtl.h"
+
+//
+// Pool tag matching object creation (must be consistent)
+//
+#define OBJECT_POOL_TAG  0x4A4F626A // 'JObj'
 
 /*++
 
@@ -68,7 +75,7 @@ Routine Description:
 
     Decrements the reference count (PointerCount) of a kernel object.
     If the count drops to zero, the object is automatically destroyed 
-    and its static slot is freed back to the pool.
+    and its memory block is freed back to the kernel pool.
 
 Arguments:
 
@@ -84,9 +91,8 @@ ObDereferenceObject(
     PVOID Object
 )
 {
-    POBJECT_HEADER      Header;
-    POBJECT_SLOT Slot;
-    LONG                NewCount;
+    POBJECT_HEADER Header;
+    LONG           NewCount;
 
     if (Object == NULL) {
         return 0;
@@ -101,7 +107,7 @@ ObDereferenceObject(
     NewCount = Header->PointerCount;
 
     //
-    // If no more references remain, clean up and free the static slot
+    // If no more references remain, clean up and free the object memory
     //
     if (NewCount <= 0) {
         //
@@ -112,17 +118,10 @@ ObDereferenceObject(
         }
 
         //
-        // Locate the parent static slot using container mapping
+        // Free the entire dynamic block (header + payload) back to the pool
         //
-        Slot = CONTAINING_RECORD(Header, _OBJECT_SLOT, Header);
-
-        //
-        // Clear slot data and mark as available
-        //
-        RtlZeroMemory(Slot, sizeof(_OBJECT_SLOT));
-        Slot->InUse = FALSE;
+        MmFreePool(Header, OBJECT_POOL_TAG);
     }
 
     return NewCount;
 }
-

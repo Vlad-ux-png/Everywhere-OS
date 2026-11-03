@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Object creation routines.
+    Dynamic object creation routines using kernel pool allocation.
 
 Author(s):
 
@@ -21,18 +21,19 @@ Environment:
 --*/
 
 #include "../inc/ob.h"
+#include "../inc/mm.h"
+#include "../inc/rtl.h"
 
 //
-// Maximum number of statically allocated kernel objects per system boot
+// Define a pool tag for kernel object allocations ('jBOO' -> OObJ)
 //
-
-_OBJECT_SLOT ObpObjectTable[MAX_OBJECTS];
+#define OBJECT_POOL_TAG  0x4A4F626A // 'JObj'
 
 /*++
 
 Routine Description:
 
-    Allocates and initializes a kernel object from the static pool.
+    Allocates and initializes a kernel object dynamically from the kernel pool.
     Attaches the OBJECT_HEADER, updates the corresponding OBJECT_TYPE 
     statistics, and returns a pointer directly to the payload area.
 
@@ -56,9 +57,9 @@ ObCreateObject(
     PVOID       *Object
     )
 {
-    ULONG               i;
-    POBJECT_SLOT Slot = NULL;
-    POBJECT_HEADER      Header;
+    POBJECT_HEADER Header;
+    ULONG          TotalAllocationSize;
+    PUCHAR         AllocatedMemory;
 
     if (ObjectType == NULL || Object == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -69,24 +70,23 @@ ObCreateObject(
     }
 
     //
-    // Locate an unallocated slot in the static object table
+    // Calculate total memory needed: OBJECT_HEADER + requested payload size
     //
-    for (i = 0; i < MAX_OBJECTS; i++) {
-        if (!ObpObjectTable[i].InUse) {
-            Slot = &ObpObjectTable[i];
-            Slot->InUse = TRUE;
-            break;
-        }
-    }
+    TotalAllocationSize = sizeof(OBJECT_HEADER) + ObjectSize;
 
-    if (Slot == NULL) {
+    //
+    // Allocate memory from the pool specified by the object type 
+    // (NonPagedPool or PagedPool)
+    //
+    AllocatedMemory = (PUCHAR)MmAllocatePool(ObjectType->PoolType, TotalAllocationSize, OBJECT_POOL_TAG);
+    if (AllocatedMemory == NULL) {
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
     //
-    // Populate the OBJECT_HEADER preceding the payload
+    // The header resides at the very beginning of the allocated block
     //
-    Header = &Slot->Header;
+    Header = (POBJECT_HEADER)AllocatedMemory;
     Header->PointerCount = 1;
     Header->HandleCount  = 0;
     Header->Type         = ObjectType;
@@ -101,14 +101,19 @@ ObCreateObject(
     }
 
     //
-    // Zero payload area for safety
+    // Get pointer to the payload area immediately following the header
     //
-    RtlZeroMemory(Slot->Payload, ObjectSize);
+    PVOID Payload = OBJECT_HEADER_TO_OBJECT(Header);
 
     //
-    // Return pointer to the payload area past the header
+    // Zero payload area for safety
     //
-    *Object = OBJECT_HEADER_TO_OBJECT(Header);
+    RtlZeroMemory(Payload, ObjectSize);
+
+    //
+    // Return pointer to the payload area
+    //
+    *Object = Payload;
 
     return STATUS_SUCCESS;
 }
