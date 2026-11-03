@@ -30,6 +30,7 @@ Abstract:
 Author:
 
     Noah Juopperi <nipfswd@gmail.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -76,6 +77,18 @@ typedef struct {
     uint32_t start_lba;             /* first data LBA                        */
     uint32_t size;                  /* file size in bytes                    */
 } __attribute__((packed)) EVRYFS_DIRENT;
+
+typedef struct _EVRYFS_FILE_CONTEXT {
+    char     FileName[EVRYFS_NAME_LEN];
+    uint32_t CurrentOffset;
+    uint32_t FileSize;
+    uint8_t  IsWritable;
+} EVRYFS_FILE_CONTEXT, *PEMY_FILE_CONTEXT;
+
+typedef struct _EVRYFS_DIR_ENTRY_INFO {
+    char     FileName[EVRYFS_NAME_LEN];
+    uint32_t FileSize;
+} EVRYFS_DIR_ENTRY_INFO, *PEVRYFS_DIR_ENTRY_INFO;
 
 /* ---- ATA helpers (ata.c) ----------------------------------------------- */
 

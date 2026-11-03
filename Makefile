@@ -118,10 +118,18 @@ OB_SRC = src/minkernel/ntos/ob/obinit.c \
          src/minkernel/ntos/ob/obcreate.c \
          src/minkernel/ntos/ob/obref.c
 
+# Input/Output (src/minkernel/ntos/io)
+IO_SRC = src/minkernel/ntos/io/iofile.c \
+         src/minkernel/ntos/io/ioread.c \
+         src/minkernel/ntos/io/iowrite.c \
+         src/minkernel/ntos/io/iodir.c \
+         src/minkernel/ntos/io/iocreate.c
+
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/ki.c
 
-ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) $(OB_SRC)
+ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) \
+            $(OB_SRC) $(IO_SRC)
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
 
 KERNEL_ELF = $(BUILD)/kernel.elf
@@ -145,6 +153,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ke)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/rtl)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/io)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm/tests)

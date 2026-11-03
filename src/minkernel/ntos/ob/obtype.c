@@ -47,7 +47,11 @@ ObCreateObjectType(
     MM_POOL_TYPE PoolType
 )
 {
-    (VOID)TypeNameString;
+    if (TypeNameString == NULL) {
+        return STATUS_INVALID_PARAMETER;
+    }
+
+    RtlInitUnicodeString(&FileType.TypeName, TypeNameString);
 
     FileType.PoolType                 = PoolType;
     FileType.TotalNumberOfObjects     = 0;

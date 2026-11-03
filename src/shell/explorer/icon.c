@@ -131,7 +131,19 @@ void IconInit(void)
 {
     s_icon_loaded = 0;
 
-    int len = EvryFsReadFile(FOLDER_ICO_FS_NAME, s_ico_buf, FOLDER_ICO_MAXSIZE);
+    PVOID fileObj = NULL;
+    ULONG bytesRead = 0;
+    int len = -1;
+
+    if (NT_SUCCESS(NtOpenFile(FOLDER_ICO_FS_NAME, &fileObj))) {
+        NTSTATUS status = NtReadFile(fileObj, s_ico_buf, FOLDER_ICO_MAXSIZE, &bytesRead);
+        if (NT_SUCCESS(status)) {
+            len = (int)bytesRead;
+        }
+
+        NtCloseFile(fileObj);
+    }
+
     if (len < 22) return; // too small
 
     if (IcoU16(s_ico_buf, 2) != 1) return;//NOT TYPE_ICON

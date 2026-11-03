@@ -26,7 +26,7 @@ Environment:
 #define _EXPLORER_H_
 
 #include "ke.h"
-#include "evryfs.h"
+#include "io.h"
 
 /* ********** Window instances (defined in base/ntos/ke/window.c) ********** */
 

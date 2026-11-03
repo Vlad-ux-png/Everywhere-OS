@@ -31,7 +31,7 @@ Environment:
 struct _OBJECT_TYPE;
 
 #define MAXIMUM_OBJECT_PAYLOAD_SIZE 256
-#define MAX_OBJECTS 12
+#define MAX_OBJECTS 24
 
 typedef struct _OBJECT_HEADER {
     LONG PointerCount;          
@@ -61,7 +61,7 @@ typedef struct _OBJECT_SLOT {
     UCHAR         Payload[MAXIMUM_OBJECT_PAYLOAD_SIZE];
 } _OBJECT_SLOT, *POBJECT_SLOT;
 
-extern _OBJECT_SLOT ObpStaticObjectTable[MAX_OBJECTS];
+extern _OBJECT_SLOT ObpObjectTable[MAX_OBJECTS];
 
 /* -----------------------------------------------------------------------
  * Object Manager Functions Primitives

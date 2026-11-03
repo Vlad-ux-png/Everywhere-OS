@@ -36,8 +36,16 @@ MkTestWorkerRoutine(
 )
 {
     static const uint8_t hello[] = "Hello, World!\n";
+    PVOID FileObject = NULL;
+    NTSTATUS Status;
+
+    (VOID)Parameter;
+
+    Status = NtCreateFile("Test\\hello.txt", hello, sizeof(hello) - 1, &FileObject);
     
-    EvryFsWriteFile("Test\\hello.txt", hello, 14);
+    if (NT_SUCCESS(Status) && FileObject != NULL) {
+        NtCloseFile(FileObject);
+    }
 }
 
 /*++

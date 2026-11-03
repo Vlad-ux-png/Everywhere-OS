@@ -26,7 +26,7 @@ Environment:
 // Maximum number of statically allocated kernel objects per system boot
 //
 
-_OBJECT_SLOT ObpStaticObjectTable[MAX_OBJECTS];
+_OBJECT_SLOT ObpObjectTable[MAX_OBJECTS];
 
 /*++
 
@@ -72,8 +72,8 @@ ObCreateObject(
     // Locate an unallocated slot in the static object table
     //
     for (i = 0; i < MAX_OBJECTS; i++) {
-        if (!ObpStaticObjectTable[i].InUse) {
-            Slot = &ObpStaticObjectTable[i];
+        if (!ObpObjectTable[i].InUse) {
+            Slot = &ObpObjectTable[i];
             Slot->InUse = TRUE;
             break;
         }
