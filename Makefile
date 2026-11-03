@@ -27,7 +27,8 @@ CFLAGS  = -m32 -ffreestanding \
           -I./src/onecore/drivers/input/keyboard/kbdclass \
           -I./src/onecore/drivers/input/mouse/mouclass \
           -I./src/minkernel/ntos/ob \
-          -I./src/minkernel/ntos/io
+          -I./src/minkernel/ntos/io \
+          -I./src/minkernel/ntos/po
 
 LDFLAGS = -m elf_i386 -T src/minkernel/ntos/init/kernel.ld
 ASFLAGS = -f elf32
@@ -127,11 +128,14 @@ IO_SRC = src/minkernel/ntos/io/iofile.c \
          src/minkernel/ntos/io/iodir.c \
          src/minkernel/ntos/io/iocreate.c
 
+# Power Manager
+PO_SRC = src/minkernel/ntos/po/poapi.c
+
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/ki.c
 
 ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) \
-            $(OB_SRC) $(IO_SRC)
+            $(OB_SRC) $(IO_SRC) $(PO_SRC)
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
 
 KERNEL_ELF = $(BUILD)/kernel.elf
@@ -156,6 +160,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/rtl)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/io)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/po)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm/tests)

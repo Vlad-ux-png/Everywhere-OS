@@ -25,11 +25,6 @@ Environment:
 #include "../inc/rtl.h"
 
 //
-// Define a tag for object type allocations
-//
-#define OB_TYPE_POOL_TAG  0x4F626A54 // 'ObjT'
-
-//
 // Internal node structure for the object type list
 //
 typedef struct _OBJECT_TYPE_NODE {

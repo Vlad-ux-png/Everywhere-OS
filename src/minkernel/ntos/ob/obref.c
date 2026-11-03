@@ -24,11 +24,6 @@ Environment:
 #include "../inc/mm.h"
 #include "../inc/rtl.h"
 
-//
-// Pool tag matching object creation (must be consistent)
-//
-#define OBJECT_POOL_TAG  0x4A4F626A // 'JObj'
-
 /*++
 
 Routine Description:

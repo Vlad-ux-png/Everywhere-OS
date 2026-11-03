@@ -24,6 +24,7 @@ Environment:
 
 #include "explorer.h"
 #include "ex.h"
+#include "po.h"
 
 char shell_input[SHELL_INPUT_SIZE];
 int  shell_len = 0;
@@ -141,7 +142,7 @@ void ShellExec(void) {
         FilesWin.visible = 1;
         FilesWin.minimized = 0;
     } else if (StrEq(shell_input, "reboot")) {
-        RebootSystem();
+        NtShutdownSystem(PowerActionShutdownReset);
     } else if (StrEq(shell_input, "mktest")) {
         static WORK_QUEUE_ITEM TestWorkItem;
         const char* msg;

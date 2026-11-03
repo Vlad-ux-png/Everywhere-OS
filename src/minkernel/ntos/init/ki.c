@@ -28,9 +28,6 @@ Environment:
 #include "explorer.h"
 #include "evryfs.h"
 
-#define KERNEL_HEAP_SIZE (1024 * 1024)
-static UCHAR KernelHeapSpace[KERNEL_HEAP_SIZE];
-
 /*++
 
 Routine Description:
@@ -60,7 +57,6 @@ void KiStartupSystem(uint32_t* mbi) {
     SnakeInit();
     EvryFsInit();
     IconInit();
-    RtlInitializeHeap(KernelHeapSpace, KERNEL_HEAP_SIZE);
 
     DrawBootScreen();
     FlipBuffers();
