@@ -27,6 +27,7 @@ Environment:
 #include "ex.h"
 #include "explorer.h"
 #include "evryfs.h"
+#include "cm.h"
 
 /*++
 
@@ -50,6 +51,7 @@ void KiStartupSystem(uint32_t* mbi) {
     KdComPortInitialize();
     MmInit(mbi);
     ExInitSystem();
+    CmInitSystem();
     SetupFramebuffer(mbi);
     InitFont();
     InitMouse();
@@ -57,6 +59,7 @@ void KiStartupSystem(uint32_t* mbi) {
     SnakeInit();
     EvryFsInit();
     IconInit();
+    RegeditInit();
 
     DrawBootScreen();
     FlipBuffers();
@@ -86,10 +89,13 @@ void KiStartupSystem(uint32_t* mbi) {
         HandleWindowMouse(&NotesWin, 1);
         HandleWindowMouse(&SnakeWin, 2);
         HandleWindowMouse(&FilesWin, 3);
+        HandleWindowMouse(&RegeditWin, 4);
 
         /* Forward left-click-down events into the Files content area. */
-        if ((mouse_buttons & 1) && !(mouse_prev_buttons & 1))
+        if ((mouse_buttons & 1) && !(mouse_prev_buttons & 1)) {
             FilesHandleClick(mouse_x, mouse_y);
+            RegeditHandleClick(mouse_x, mouse_y);
+        }
 
         HandleTaskbarClick();
 
@@ -97,29 +103,29 @@ void KiStartupSystem(uint32_t* mbi) {
         UpdateWindowPhysics(&NotesWin);
         UpdateWindowPhysics(&SnakeWin);
         UpdateWindowPhysics(&FilesWin);
+        UpdateWindowPhysics(&RegeditWin);
 
         DrawDesktop();
 
-        WINDOW* wins[4] = { &ShellWin, &NotesWin, &SnakeWin, &FilesWin };
+        WINDOW* wins[5] = { &ShellWin, &NotesWin, &SnakeWin, &FilesWin, &RegeditWin };
 
         WINDOW* active_p = wins[active_window];
         int dest = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             if (i != active_window) {
                 wins[dest++] = wins[i];
             }
         }
-        wins[3] = active_p;
+        wins[4] = active_p;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             DrawWindowFrame(wins[i]);
-        }
 
-        for (int i = 0; i < 4; i++) {
             if (wins[i] == &ShellWin) ShellDraw();
             else if (wins[i] == &NotesWin) NotesDraw();
             else if (wins[i] == &SnakeWin) SnakeDraw();
             else if (wins[i] == &FilesWin) FilesDraw();
+            else if (wins[i] == &RegeditWin) RegeditDraw();
         }
 
         DrawTaskbar();

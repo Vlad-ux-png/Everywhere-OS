@@ -25,10 +25,7 @@ CFLAGS  = -m32 -ffreestanding \
           -I./src/shell/explorer \
           -I./src/minkernel/fs/evryfs \
           -I./src/onecore/drivers/input/keyboard/kbdclass \
-          -I./src/onecore/drivers/input/mouse/mouclass \
-          -I./src/minkernel/ntos/ob \
-          -I./src/minkernel/ntos/io \
-          -I./src/minkernel/ntos/po
+          -I./src/onecore/drivers/input/mouse/mouclass
 
 LDFLAGS = -m elf_i386 -T src/minkernel/ntos/init/kernel.ld
 ASFLAGS = -f elf32
@@ -81,10 +78,13 @@ FS_SRC = src/minkernel/fs/evryfs/ata.c \
          src/minkernel/fs/evryfs/read.c \
          src/minkernel/fs/evryfs/write.c \
          src/minkernel/fs/evryfs/strsup.c
+
 HAL_SRC = src/minkernel/hals/halx86/halinit.c \
           src/minkernel/hals/halx86/power.c
+
 HAL_ASM_SRC = src/minkernel/hals/halx86/irq12.asm \
               src/minkernel/hals/halx86/i386/ixclock.asm
+
 HAL_ASM_OBJ = $(BUILD)/src/minkernel/hals/halx86/irq12.o \
               $(BUILD)/src/minkernel/hals/halx86/i386/ixclock.o
 
@@ -95,7 +95,8 @@ SHELL_SRC = src/shell/explorer/desktop.c \
             src/shell/explorer/snake.c \
             src/shell/explorer/input.c \
             src/shell/explorer/files.c \
-            src/shell/explorer/icon.c
+            src/shell/explorer/icon.c \
+            src/shell/explorer/regedit.c 
 
 KBDCLASS_SRC = src/onecore/drivers/input/keyboard/kbdclass/kbdclass.c
 MOUCLASS_SRC = src/onecore/drivers/input/mouse/mouclass/mouclass.c
@@ -121,7 +122,7 @@ OB_SRC = src/minkernel/ntos/ob/obinit.c \
          src/minkernel/ntos/ob/obcreate.c \
          src/minkernel/ntos/ob/obref.c
 
-# Input/Output (src/minkernel/ntos/io)
+# Input/Output
 IO_SRC = src/minkernel/ntos/io/iofile.c \
          src/minkernel/ntos/io/ioread.c \
          src/minkernel/ntos/io/iowrite.c \
@@ -131,11 +132,16 @@ IO_SRC = src/minkernel/ntos/io/iofile.c \
 # Power Manager
 PO_SRC = src/minkernel/ntos/po/poapi.c
 
+# Config Manager
+CM_SRC = src/minkernel/ntos/cm/cminit.c \
+         src/minkernel/ntos/cm/cmapi.c
+
 # Main entry
 MAIN_SRC = src/minkernel/ntos/init/ki.c
 
 ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) \
-            $(OB_SRC) $(IO_SRC) $(PO_SRC)
+            $(OB_SRC) $(IO_SRC) $(PO_SRC) $(CM_SRC)
+
 ALL_C_OBJ = $(patsubst %.c,$(BUILD)/%.o,$(ALL_C_SRC))
 
 KERNEL_ELF = $(BUILD)/kernel.elf
@@ -161,6 +167,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/io)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/po)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/cm)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/mm/tests)

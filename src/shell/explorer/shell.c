@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Shell command input and execution (clear, credits, snake, notes, files, mktest,reboot).
+    Shell command input and execution (clear, credits, snake, notes, files, mktest, reboot, regedit).
 
 Author:
 
@@ -99,7 +99,7 @@ void ShellDraw(void) {
 Routine Description:
 
     Executes the current shell command. Recognizes "clear", "credits", "snake",
-    "notes", "files", "mktest" and "reboot".
+    "notes", "files", "mktest", "reboot" and "regedit".
 
 Arguments:
 
@@ -119,8 +119,8 @@ void ShellExec(void) {
     if (StrEq(shell_input, "help")) {
         const char* msg;
         int i = 0;
-        msg = "Commands: clear, credits, snake,\nnotes, files, mktest, reboot\n";
-        while (msg[i] && i < 63) { shell_output[i] = msg[i]; i++; }
+        msg = "Commands: clear, credits, snake,\nnotes, files, mktest, reboot, regedit\n";
+        while (msg[i] && i < 72) { shell_output[i] = msg[i]; i++; }
         shell_output[i] = 0;
         shell_has_output = 1;
     } else if (StrEq(shell_input, "clear")) {
@@ -163,7 +163,10 @@ void ShellExec(void) {
         }
         shell_output[i] = 0;
         shell_has_output = 1;
-    }
+    } else if (StrEq(shell_input, "regedit")) {
+        RegeditWin.visible = 1;
+        RegeditWin.minimized = 0;
+    } 
 
     shell_len = 0;
     shell_input[0] = 0;

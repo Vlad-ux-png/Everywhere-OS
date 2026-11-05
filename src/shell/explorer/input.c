@@ -14,6 +14,7 @@ Author:
 
     Noah Juopperi <nipfswd@gmail.com>
     Clay Sanders (made the first version of the kernel) <claylikepython@yahoo.com>
+    Vlad Lymar <ggcc98765432110@gmail.com>
 
 Environment:
 
@@ -55,6 +56,12 @@ void HandleKeyboardInput(char ch) {
             FilesHandleKey(last_scancode);
     }
 
+    /* Regedit window: arrow navigation, Enter, and shortcuts */
+    if (active_window == 4 && RegeditWin.visible && !RegeditWin.minimized) {
+        if (last_scancode == 0x48 || last_scancode == 0x50 || last_scancode == 0x1C || last_scancode == 0x31)
+            RegeditHandleKey(last_scancode);
+    }
+
     if (!ch) return;
 
     if (active_window == 0) {
@@ -75,5 +82,8 @@ void HandleKeyboardInput(char ch) {
             notes_buf[notes_len++] = ch;
             notes_buf[notes_len] = 0;
         }
+    } else if (active_window == 4) {
+        /* Regedit character text input (for names and values) */
+        RegeditHandleChar(ch);
     }
 }
