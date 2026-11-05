@@ -42,7 +42,7 @@ RtlRandom(
     }
 
     if (*Seed == 0) {
-        *Seed = 0x1337CAFEUL; 
+        *Seed = !*Seed; 
     }
 
     Temp = (ULONGLONG)(*Seed) * 2147001325UL + 715136305UL;
