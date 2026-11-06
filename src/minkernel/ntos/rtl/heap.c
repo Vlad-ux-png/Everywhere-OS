@@ -8,7 +8,8 @@ Module Name:
 
 Abstract:
 
-    RTL heap allocator with free support using a linked list block layout.
+    RTL heap allocator with free support using a linked list block layout
+    compatible with MM test suite requirements.
 
 Author(s):
 
@@ -22,14 +23,17 @@ Environment:
 
 #include "../inc/ntdef.h"
 #include "../inc/rtl.h"
+#include "mi.h" 
 
 //
-// Heap block header structure
+// Heap block header structure aligned with MM expectations
 //
 typedef struct _HEAP_BLOCK {
-    ULONG                BlockSize; // Total size including header
-    BOOLEAN              IsFree;    // TRUE if free, FALSE if allocated
-    struct _HEAP_BLOCK*  Next;      // Next block in memory order
+    ULONG               BlockSize;   
+    ULONG               PreviousSize; 
+    ULONG               PoolTag;    
+    BOOLEAN             IsFree;     
+    struct _HEAP_BLOCK* Next;        
 } HEAP_BLOCK, *PHEAP_BLOCK;
 
 #define HEAP_HEADER_SIZE  ((ULONG)sizeof(HEAP_BLOCK))
@@ -63,9 +67,11 @@ RtlInitializeHeap(
     // Create a single large free block covering the entire heap
     //
     RtlpHeapHead = (PHEAP_BLOCK)RtlpHeapMemoryStart;
-    RtlpHeapHead->BlockSize = HeapSize;
-    RtlpHeapHead->IsFree    = TRUE;
-    RtlpHeapHead->Next      = NULL;
+    RtlpHeapHead->BlockSize    = HeapSize / POOL_BLOCK_SIZE; // Або у байтах, залежно від вашого mi.h
+    RtlpHeapHead->PreviousSize = 0;
+    RtlpHeapHead->PoolTag      = 0;
+    RtlpHeapHead->IsFree       = TRUE;
+    RtlpHeapHead->Next         = NULL;
 }
 
 /*++
@@ -95,7 +101,7 @@ RtlAllocateHeap(
         return NULL;
     }
 
-    // Align required size to 8 bytes for safety
+    // Align required size to granularity (e.g., 8 bytes)
     RequiredSize = (NumberOfBytes + 7) & ~7;
     RequiredSize += HEAP_HEADER_SIZE;
 
@@ -105,20 +111,28 @@ RtlAllocateHeap(
     // Traverse the memory block list (First-Fit strategy)
     //
     while (Current != NULL) {
-        if (Current->IsFree && Current->BlockSize >= RequiredSize) {
+        if (Current->IsFree && (Current->BlockSize * POOL_BLOCK_SIZE) >= RequiredSize) {
             
+            ULONG CurrentTotalSize = Current->BlockSize * POOL_BLOCK_SIZE;
+
             //
             // Check if we can split the block
             //
-            if (Current->BlockSize >= RequiredSize + HEAP_HEADER_SIZE + 8) {
+            if (CurrentTotalSize >= RequiredSize + HEAP_HEADER_SIZE + POOL_BLOCK_SIZE) {
                 PHEAP_BLOCK NextBlock = (PHEAP_BLOCK)((PUCHAR)Current + RequiredSize);
                 
-                NextBlock->BlockSize = Current->BlockSize - RequiredSize;
-                NextBlock->IsFree    = TRUE;
-                NextBlock->Next      = Current->Next;
+                NextBlock->BlockSize    = (CurrentTotalSize - RequiredSize) / POOL_BLOCK_SIZE;
+                NextBlock->PreviousSize = RequiredSize / POOL_BLOCK_SIZE;
+                NextBlock->PoolTag      = 0;
+                NextBlock->IsFree       = TRUE;
+                NextBlock->Next         = Current->Next;
 
-                Current->BlockSize = RequiredSize;
+                Current->BlockSize = RequiredSize / POOL_BLOCK_SIZE;
                 Current->Next      = NextBlock;
+
+                if (NextBlock->Next != NULL) {
+                    NextBlock->Next->PreviousSize = NextBlock->BlockSize;
+                }
             }
 
             Current->IsFree = FALSE;
@@ -168,7 +182,10 @@ RtlFreeHeap(
         if (Current->IsFree && Current->Next->IsFree) {
             Current->BlockSize += Current->Next->BlockSize;
             Current->Next      = Current->Next->Next;
-            // Stay on current to check further merges
+            
+            if (Current->Next != NULL) {
+                Current->Next->PreviousSize = Current->BlockSize;
+            }
             continue;
         }
         Current = Current->Next;
