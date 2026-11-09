@@ -49,7 +49,7 @@ CmInitSystem(
     VOID
 )
 {
-    CmRootKey = (PCM_KEY_NODE)MmAllocatePool(NonPagedPool, sizeof(CM_KEY_NODE), CM_POOL_TAG);
+    CmRootKey = (PCM_KEY_NODE)RtlAllocateHeap(sizeof(CM_KEY_NODE));
     if (CmRootKey) {
         CmRootKey->Name = "REGISTRY";
         CmRootKey->Parent = NULL;

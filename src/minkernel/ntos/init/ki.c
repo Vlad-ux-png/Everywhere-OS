@@ -24,10 +24,15 @@ Environment:
 --*/
 
 #include "ke.h"
+#include "ob.h"
 #include "ex.h"
 #include "explorer.h"
 #include "evryfs.h"
 #include "cm.h"
+
+#define HEAP_SIZE (512 * 1024)
+
+static UCHAR SystemHeap[HEAP_SIZE];
 
 /*++
 
@@ -50,6 +55,8 @@ Return Value:
 void KiStartupSystem(uint32_t* mbi) {
     KdComPortInitialize();
     MmInit(mbi);
+    RtlInitializeHeap(SystemHeap, HEAP_SIZE);
+    ObInitSystem();
     ExInitSystem();
     CmInitSystem();
     SetupFramebuffer(mbi);

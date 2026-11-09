@@ -263,8 +263,6 @@ RtlAppendUnicodeStringToString(
     return STATUS_SUCCESS;
 }
 
-#define RTL_TAG_STRING 0x536C7452UL /* 'RtlS' */
-
 NTSTATUS
 RtlAnsiStringToUnicodeString(
     PUNICODE_STRING DestinationString,
@@ -278,9 +276,9 @@ RtlAnsiStringToUnicodeString(
     Length = (USHORT)(SourceString->Length * sizeof(WCHAR));
     if (AllocateDestinationString) {
         DestinationString->MaximumLength = (USHORT)(Length + sizeof(WCHAR));
-        DestinationString->Buffer = (PWSTR)MmAllocatePool(NonPagedPool,
-                                                          DestinationString->MaximumLength,
-                                                          RTL_TAG_STRING);
+        
+        DestinationString->Buffer = (PWSTR)RtlAllocateHeap(DestinationString->MaximumLength);
+        
         if (DestinationString->Buffer == NULL) {
             return STATUS_NO_MEMORY;
         }
@@ -313,9 +311,9 @@ RtlUnicodeStringToAnsiString(
     Characters = (USHORT)(SourceString->Length / sizeof(WCHAR));
     if (AllocateDestinationString) {
         DestinationString->MaximumLength = (USHORT)(Characters + 1);
-        DestinationString->Buffer = (PCHAR)MmAllocatePool(NonPagedPool,
-                                                          DestinationString->MaximumLength,
-                                                          RTL_TAG_STRING);
+        
+        DestinationString->Buffer = (PCHAR)RtlAllocateHeap(DestinationString->MaximumLength);
+        
         if (DestinationString->Buffer == NULL) {
             return STATUS_NO_MEMORY;
         }
@@ -342,7 +340,7 @@ RtlFreeAnsiString(
     )
 {
     if (AnsiString && AnsiString->Buffer) {
-        MmFreePool(AnsiString->Buffer, RTL_TAG_STRING);
+        RtlFreeHeap(AnsiString->Buffer);
         AnsiString->Buffer = NULL;
         AnsiString->Length = 0;
         AnsiString->MaximumLength = 0;
@@ -355,7 +353,7 @@ RtlFreeUnicodeString(
     )
 {
     if (UnicodeString && UnicodeString->Buffer) {
-        MmFreePool(UnicodeString->Buffer, RTL_TAG_STRING);
+        RtlFreeHeap(UnicodeString->Buffer);
         UnicodeString->Buffer = NULL;
         UnicodeString->Length = 0;
         UnicodeString->MaximumLength = 0;

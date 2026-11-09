@@ -32,8 +32,6 @@ Environment:
 #define REG_SZ          1
 #define REG_DWORD       4
 
-#define CM_POOL_TAG  0x436D6A4E // 'CmjN'
-
 typedef struct _CM_KEY_NODE CM_KEY_NODE, *PCM_KEY_NODE;
 typedef struct _CM_VALUE_ENTRY CM_VALUE_ENTRY, *PCM_VALUE_ENTRY;
 

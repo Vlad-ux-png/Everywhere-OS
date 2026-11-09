@@ -86,8 +86,5 @@ NtShutdownSystem(
 
     PoShutdownSystem(Action);
 
-    //
-    // If the system reaches this point, the hardware failed to reboot or power off.
-    //
-    return STATUS_UNSUCCESSFUL;
+    return STATUS_SUCCESS;
 }

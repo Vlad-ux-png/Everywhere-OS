@@ -113,9 +113,9 @@ ObDereferenceObject(
         }
 
         //
-        // Free the entire dynamic block (header + payload) back to the pool
+        // Free the entire dynamic block (header + payload) back to the RTL heap directly
         //
-        MmFreePool(Header, OBJECT_POOL_TAG);
+        RtlFreeHeap(Header);
     }
 
     return NewCount;

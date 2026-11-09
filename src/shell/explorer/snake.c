@@ -28,7 +28,7 @@ Environment:
 
 int snake_x[SNAKE_MAX];
 int snake_y[SNAKE_MAX];
-int snake_len = 25;
+int snake_len = 10;
 int snake_dx = 1;
 int snake_dy = 0;
 int food_x = 20;
@@ -84,12 +84,12 @@ void SnakeStep(void) {
     if (!SnakeWin.visible || SnakeWin.minimized) return;
 
     //
-    // Advance the snake at a fixed 150 ms interval regardless of the
+    // Advance the snake at a fixed 75 ms interval regardless of the
     // render frame rate.  Without this gate the snake would move at
     // 100 Hz (every 10 ms frame), which is unplayably fast.
     //
     Now = KernelGetTickCount();
-    if (Now - LastStepMs < 150) return;
+    if (Now - LastStepMs < 75) return;
     LastStepMs = Now;
 
     for (int i = snake_len - 1; i > 0; i--) {
@@ -105,8 +105,9 @@ void SnakeStep(void) {
     if (snake_y[0] > SnakeWin.h - 20) snake_y[0] = SnakeWin.h - 20;
 
     for (int i = 0; i < 4; i++) {
-        if (snake_x[0] == food_x && snake_y[0] == food_y) {
-            if (snake_len < SNAKE_MAX) snake_len++;
+        if ((snake_x[0] == food_x || snake_x[0] == (food_x + 1)) && 
+            (snake_y[0] == food_y || snake_y[0] == (food_y + 1))) {
+            if (snake_len < SNAKE_MAX) snake_len += 3;
     
             food_x = RtlRandom(&rand_seed) % (SnakeWin.w - 10);
             food_y = RtlRandom(&rand_seed) % (SnakeWin.h - 20);

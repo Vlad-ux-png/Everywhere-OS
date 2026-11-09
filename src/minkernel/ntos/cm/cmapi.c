@@ -47,7 +47,7 @@ CmCreateKey(
 {
     if (!Name) return NULL;
 
-    PCM_KEY_NODE NewKey = (PCM_KEY_NODE)MmAllocatePool(NonPagedPool, sizeof(CM_KEY_NODE), CM_POOL_TAG);
+    PCM_KEY_NODE NewKey = (PCM_KEY_NODE)RtlAllocateHeap(sizeof(CM_KEY_NODE));
     if (!NewKey) return NULL;
 
     NewKey->Name = Name;
@@ -102,7 +102,7 @@ CmSetValueKey(
 {
     if (!Key || !Name) return;
 
-    PCM_VALUE_ENTRY NewVal = (PCM_VALUE_ENTRY)MmAllocatePool(NonPagedPool, sizeof(CM_VALUE_ENTRY), CM_POOL_TAG);
+    PCM_VALUE_ENTRY NewVal = (PCM_VALUE_ENTRY)RtlAllocateHeap(sizeof(CM_VALUE_ENTRY));
     if (!NewVal) return;
 
     NewVal->Name = Name;
@@ -110,7 +110,7 @@ CmSetValueKey(
     NewVal->DataSize = DataSize;
 
     if (Data && DataSize > 0) {
-        NewVal->Data = MmAllocatePool(NonPagedPool, DataSize, CM_POOL_TAG);
+        NewVal->Data = RtlAllocateHeap(DataSize);
         if (NewVal->Data) {
             PSTR Dest = (PSTR)NewVal->Data;
             PCSTR Src = (PCSTR)Data;
@@ -125,7 +125,6 @@ CmSetValueKey(
     NewVal->Next = Key->Values;
     Key->Values = NewVal;
 }
-
 
 /*++
 

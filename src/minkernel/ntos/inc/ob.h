@@ -30,9 +30,6 @@ Environment:
 
 #define MAXIMUM_OBJECT_PAYLOAD_SIZE 256
 
-#define OBJECT_POOL_TAG  0x4A4F626A // 'JObj'
-#define OB_TYPE_POOL_TAG  0x4F626A54 // 'ObjT'
-
 struct _OBJECT_TYPE;
 
 typedef struct _OBJECT_HEADER {

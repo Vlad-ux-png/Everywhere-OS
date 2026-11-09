@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    RTL heap allocator with free support using a linked list block layout.
+    RTL heap allocator with free support and block coalescing.
 
 Author(s):
 
@@ -24,15 +24,19 @@ Environment:
 #include "../inc/rtl.h"
 
 //
-// Heap block header structure
+// Heap block header structure (all sizes are strictly in bytes)
 //
 typedef struct _HEAP_BLOCK {
-    ULONG                BlockSize; // Total size including header
-    BOOLEAN              IsFree;    // TRUE if free, FALSE if allocated
-    struct _HEAP_BLOCK*  Next;      // Next block in memory order
+    ULONG               BlockSize;    
+    ULONG               PreviousSize; 
+    BOOLEAN             IsFree;      
+    struct _HEAP_BLOCK* Next;        
 } HEAP_BLOCK, *PHEAP_BLOCK;
 
-#define HEAP_HEADER_SIZE  ((ULONG)sizeof(HEAP_BLOCK))
+#define HEAP_HEADER_SIZE      ((ULONG)sizeof(HEAP_BLOCK))
+#define HEAP_ALIGNMENT        8UL
+#define HEAP_ALIGN_UP(x)      (((x) + (HEAP_ALIGNMENT - 1)) & ~(HEAP_ALIGNMENT - 1))
+#define HEAP_MIN_BLOCK_SIZE   (HEAP_ALIGN_UP(HEAP_HEADER_SIZE) + HEAP_ALIGNMENT)
 
 static PUCHAR        RtlpHeapMemoryStart = NULL;
 static ULONG         RtlpHeapTotalSize   = 0;
@@ -57,15 +61,16 @@ RtlInitializeHeap(
 )
 {
     RtlpHeapMemoryStart = (PUCHAR)HeapMemory;
-    RtlpHeapTotalSize   = HeapSize;
+    RtlpHeapTotalSize   = HeapSize & ~(HEAP_ALIGNMENT - 1); // Align total size
 
     //
     // Create a single large free block covering the entire heap
     //
     RtlpHeapHead = (PHEAP_BLOCK)RtlpHeapMemoryStart;
-    RtlpHeapHead->BlockSize = HeapSize;
-    RtlpHeapHead->IsFree    = TRUE;
-    RtlpHeapHead->Next      = NULL;
+    RtlpHeapHead->BlockSize    = RtlpHeapTotalSize;
+    RtlpHeapHead->PreviousSize = 0;
+    RtlpHeapHead->IsFree       = TRUE;
+    RtlpHeapHead->Next         = NULL;
 }
 
 /*++
@@ -95,9 +100,10 @@ RtlAllocateHeap(
         return NULL;
     }
 
-    // Align required size to 8 bytes for safety
-    RequiredSize = (NumberOfBytes + 7) & ~7;
+    // Align required payload size and add header size
+    RequiredSize = HEAP_ALIGN_UP(NumberOfBytes);
     RequiredSize += HEAP_HEADER_SIZE;
+    RequiredSize = HEAP_ALIGN_UP(RequiredSize);
 
     Current = RtlpHeapHead;
 
@@ -108,22 +114,27 @@ RtlAllocateHeap(
         if (Current->IsFree && Current->BlockSize >= RequiredSize) {
             
             //
-            // Check if we can split the block
+            // Check if remaining space is enough to split into a new free block
             //
-            if (Current->BlockSize >= RequiredSize + HEAP_HEADER_SIZE + 8) {
+            if (Current->BlockSize >= RequiredSize + HEAP_MIN_BLOCK_SIZE) {
                 PHEAP_BLOCK NextBlock = (PHEAP_BLOCK)((PUCHAR)Current + RequiredSize);
                 
-                NextBlock->BlockSize = Current->BlockSize - RequiredSize;
-                NextBlock->IsFree    = TRUE;
-                NextBlock->Next      = Current->Next;
+                NextBlock->BlockSize    = Current->BlockSize - RequiredSize;
+                NextBlock->PreviousSize = RequiredSize;
+                NextBlock->IsFree       = TRUE;
+                NextBlock->Next         = Current->Next;
 
                 Current->BlockSize = RequiredSize;
                 Current->Next      = NextBlock;
+
+                if (NextBlock->Next != NULL) {
+                    NextBlock->Next->PreviousSize = NextBlock->BlockSize;
+                }
             }
 
             Current->IsFree = FALSE;
             
-            // Return pointer past the header (payload)
+            // Return pointer past the header (payload area)
             return (PVOID)((PUCHAR)Current + HEAP_HEADER_SIZE);
         }
 
@@ -168,8 +179,11 @@ RtlFreeHeap(
         if (Current->IsFree && Current->Next->IsFree) {
             Current->BlockSize += Current->Next->BlockSize;
             Current->Next      = Current->Next->Next;
-            // Stay on current to check further merges
-            continue;
+            
+            if (Current->Next != NULL) {
+                Current->Next->PreviousSize = Current->BlockSize;
+            }
+            continue; // Re-evaluate current with new next
         }
         Current = Current->Next;
     }

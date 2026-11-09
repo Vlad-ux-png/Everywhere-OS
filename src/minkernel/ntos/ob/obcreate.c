@@ -70,10 +70,9 @@ ObCreateObject(
     TotalAllocationSize = sizeof(OBJECT_HEADER) + ObjectSize;
 
     //
-    // Allocate memory from the pool specified by the object type 
-    // (NonPagedPool or PagedPool)
+    // Allocate memory from the RTL heap
     //
-    AllocatedMemory = (PUCHAR)MmAllocatePool(ObjectType->PoolType, TotalAllocationSize, OBJECT_POOL_TAG);
+    AllocatedMemory = (PUCHAR)RtlAllocateHeap(TotalAllocationSize);
     if (AllocatedMemory == NULL) {
         return STATUS_INSUFFICIENT_RESOURCES;
     }

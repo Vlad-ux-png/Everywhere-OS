@@ -67,9 +67,9 @@ ObCreateObjectType(
     }
 
     //
-    // Allocate memory for the new object type node
+    // Allocate memory for the new object type node via RTL heap directly
     //
-    NewNode = (POBJECT_TYPE_NODE)MmAllocatePool(PoolType, sizeof(OBJECT_TYPE_NODE), OB_TYPE_POOL_TAG);
+    NewNode = (POBJECT_TYPE_NODE)RtlAllocateHeap(sizeof(OBJECT_TYPE_NODE));
     if (NewNode == NULL) {
         return STATUS_INSUFFICIENT_RESOURCES;
     }
