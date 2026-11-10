@@ -83,7 +83,7 @@ typedef struct _EVRYFS_FILE_CONTEXT {
     uint32_t CurrentOffset;
     uint32_t FileSize;
     uint8_t  IsWritable;
-} EVRYFS_FILE_CONTEXT, *PEMY_FILE_CONTEXT;
+} EVRYFS_FILE_CONTEXT, *PEVRY_FILE_CONTEXT;
 
 typedef struct _EVRYFS_DIR_ENTRY_INFO {
     char     FileName[EVRYFS_NAME_LEN];

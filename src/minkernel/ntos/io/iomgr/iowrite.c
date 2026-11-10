@@ -50,8 +50,8 @@ NtWriteFile(
     PULONG BytesWritten
 )
 {
-    PEMY_FILE_CONTEXT FileContext;
-    int               WriteResult;
+    PEVRY_FILE_CONTEXT FileContext;
+    LONG               WriteResult;
 
     if (FileObject == NULL || Buffer == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -65,7 +65,7 @@ NtWriteFile(
         return STATUS_OBJECT_TYPE_MISMATCH;
     }
 
-    FileContext = (PEMY_FILE_CONTEXT)FileObject;
+    FileContext = (PEVRY_FILE_CONTEXT)FileObject;
 
     if (!FileContext->IsWritable) {
         return STATUS_ACCESS_DENIED;

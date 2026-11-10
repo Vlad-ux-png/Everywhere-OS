@@ -123,11 +123,11 @@ OB_SRC = src/minkernel/ntos/ob/obinit.c \
          src/minkernel/ntos/ob/obref.c
 
 # Input/Output
-IO_SRC = src/minkernel/ntos/io/iofile.c \
-         src/minkernel/ntos/io/ioread.c \
-         src/minkernel/ntos/io/iowrite.c \
-         src/minkernel/ntos/io/iodir.c \
-         src/minkernel/ntos/io/iocreate.c
+IO_SRC = src/minkernel/ntos/io/iomgr/iofile.c \
+         src/minkernel/ntos/io/iomgr/ioread.c \
+         src/minkernel/ntos/io/iomgr/iowrite.c \
+         src/minkernel/ntos/io/iomgr/iodir.c \
+         src/minkernel/ntos/io/iomgr/iocreate.c
 
 # Power Manager
 PO_SRC = src/minkernel/ntos/po/poapi.c
@@ -165,7 +165,7 @@ $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ke)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/rtl)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ex)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/ob)
-$(shell mkdir -p $(BUILD)/src/minkernel/ntos/io)
+$(shell mkdir -p $(BUILD)/src/minkernel/ntos/io/iomgr)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/po)
 $(shell mkdir -p $(BUILD)/src/minkernel/ntos/cm)
 $(shell mkdir -p $(BUILD)/src/minkernel/boot/kdcom)

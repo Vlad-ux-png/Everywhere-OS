@@ -46,34 +46,33 @@ Return Value:
 --*/
 NTSTATUS
 NtCreateFile(
-    const char*    FileName,
-    const uint8_t* InitialData,
-    ULONG          Length,
-    PVOID*         OutFileObject
+    PCHAR  FileName,
+    PCHAR  InitialData,
+    ULONG  Length,
+    PPVOID OutFileObject
 )
 {
-    NTSTATUS          Status;
-    POBJECT_TYPE      FileType;
-    PVOID             FileObject = NULL;
-    PEMY_FILE_CONTEXT FileContext;
-    int               WriteResult;
+    NTSTATUS           Status;
+    POBJECT_TYPE       FileType;
+    PVOID              FileObject = NULL;
+    PEVRY_FILE_CONTEXT FileContext;
+    LONG               WriteResult;
 
     if (FileName == NULL || OutFileObject == NULL) {
         return STATUS_INVALID_PARAMETER;
     }
 
     //
-    // 1. Create or initialize the file on disk using EVRYFS backend.
-    // If InitialData is NULL, we pass an empty buffer to initialize a 0-byte file.
+    // Create or initialize the file on disk using EVRYFS backend.
     //
-    const uint8_t* DataPtr = InitialData ? InitialData : (const uint8_t*)"";
-    WriteResult = EvryFsWriteFile(FileName, DataPtr, (int)Length);
+    PCHAR DataPtr = InitialData ? InitialData : (PCHAR)"";
+    WriteResult = EvryFsWriteFile(FileName, DataPtr, (LONG)Length);
     if (WriteResult < 0) {
         return STATUS_UNSUCCESSFUL; 
     }
 
     //
-    // 2. Reference the registered "File" object type
+    // Reference the registered "File" object type
     //
     FileType = ObReferenceObjectTypeByName(L"File");
     if (FileType == NULL) {
@@ -81,7 +80,7 @@ NtCreateFile(
     }
 
     //
-    // 3. Allocate an object instance from the static object table
+    // Allocate an object instance from the static object table
     //
     Status = ObCreateObject(FileType, sizeof(EVRYFS_FILE_CONTEXT), &FileObject);
     if (!NT_SUCCESS(Status)) {
@@ -89,9 +88,9 @@ NtCreateFile(
     }
 
     //
-    // 4. Initialize the file context payload
+    // Initialize the file context payload
     //
-    FileContext = (PEMY_FILE_CONTEXT)FileObject;
+    FileContext = (PEVRY_FILE_CONTEXT)FileObject;
 
     EvryFsStrCpy(FileContext->FileName, FileName, EVRYFS_NAME_LEN);
     FileContext->CurrentOffset = 0;
@@ -99,7 +98,7 @@ NtCreateFile(
     FileContext->IsWritable    = TRUE;
 
     //
-    // 5. Return the file object pointer to the caller
+    // Return the file object pointer to the caller
     //
     *OutFileObject = FileObject;
     return STATUS_SUCCESS;

@@ -42,15 +42,15 @@ Return Value:
 --*/
 NTSTATUS
 NtOpenFile(
-    const char* FileName,
-    PVOID*      OutFileObject
+    PCHAR  FileName,
+    PPVOID OutFileObject
 )
 {
     NTSTATUS          Status;
     POBJECT_TYPE      FileType;
     PVOID             FileObject = NULL;
-    PEMY_FILE_CONTEXT FileContext;
-    int               EntryIdx;
+    PEVRY_FILE_CONTEXT FileContext;
+    LONG              EntryIdx;
 
     if (FileName == NULL || OutFileObject == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -84,7 +84,7 @@ NtOpenFile(
     // Initialize file context payload from directory entry
     //
     EVRYFS_DIRENT* dirent = EvryFsDirEntry(EntryIdx);
-    FileContext = (PEMY_FILE_CONTEXT)FileObject;
+    FileContext = (PEVRY_FILE_CONTEXT)FileObject;
 
     EvryFsStrCpy(FileContext->FileName, dirent->name, EVRYFS_NAME_LEN);
     FileContext->CurrentOffset = 0;

@@ -51,13 +51,11 @@ NtQueryDirectory(
     PULONG EntriesCount
 )
 {
-    char     Names[EVRYFS_MAX_FILES][EVRYFS_NAME_LEN];
-    uint32_t Sizes[EVRYFS_MAX_FILES];
-    int      Count = 0;
-    ULONG    RequiredLength;
+    CHAR                   Names[EVRYFS_MAX_FILES][EVRYFS_NAME_LEN];
+    ULONG                  Sizes[EVRYFS_MAX_FILES];
+    LONG                   Count = 0;
+    ULONG                  RequiredLength;
     PEVRYFS_DIR_ENTRY_INFO OutEntries;
-
-    (VOID)FileObject;
 
     if (Buffer == NULL || EntriesCount == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -66,7 +64,7 @@ NtQueryDirectory(
     //
     // Call EVRYFS core list routine to gather names and sizes
     //
-    EvryFsList(Names, Sizes, &Count);
+    EvryFsList((char (*)[EVRYFS_NAME_LEN])Names, Sizes, &Count);
 
     //
     // Calculate required buffer space

@@ -50,8 +50,8 @@ NtReadFile(
     PULONG BytesRead
 )
 {
-    PEMY_FILE_CONTEXT FileContext;
-    int               ReadResult;
+    PEVRY_FILE_CONTEXT FileContext;
+    LONG               ReadResult;
 
     if (FileObject == NULL || Buffer == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -65,7 +65,7 @@ NtReadFile(
         return STATUS_OBJECT_TYPE_MISMATCH;
     }
 
-    FileContext = (PEMY_FILE_CONTEXT)FileObject;
+    FileContext = (PEVRY_FILE_CONTEXT)FileObject;
 
     //
     // Read data using EVRYFS read routine

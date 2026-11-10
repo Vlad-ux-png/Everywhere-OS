@@ -28,8 +28,8 @@ Environment:
 
 NTSTATUS
 NtOpenFile(
-    const char* FileName,
-    PVOID*      OutFileObject
+    PCHAR  FileName,
+    PPVOID OutFileObject
 );
 
 NTSTATUS
@@ -63,10 +63,10 @@ NtQueryDirectory(
 
 NTSTATUS
 NtCreateFile(
-    const char*    FileName,
-    const uint8_t* InitialData,
-    ULONG          Length,
-    PVOID*         OutFileObject
+    PCHAR FileName,
+    PCHAR InitialData,
+    ULONG Length,
+    PVOID OutFileObject
 );
 
 #endif /* _IO_H_ */
