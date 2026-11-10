@@ -46,11 +46,11 @@ NtOpenFile(
     PPVOID OutFileObject
 )
 {
-    NTSTATUS          Status;
-    POBJECT_TYPE      FileType;
-    PVOID             FileObject = NULL;
+    NTSTATUS           Status;
+    POBJECT_TYPE       FileType;
+    PVOID              FileObject = NULL;
     PEVRY_FILE_CONTEXT FileContext;
-    LONG              EntryIdx;
+    LONG               EntryIdx;
 
     if (FileName == NULL || OutFileObject == NULL) {
         return STATUS_INVALID_PARAMETER;
