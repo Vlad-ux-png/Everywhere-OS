@@ -137,7 +137,7 @@ CM_SRC = src/minkernel/ntos/cm/cminit.c \
          src/minkernel/ntos/cm/cmapi.c
 
 # Main entry
-MAIN_SRC = src/minkernel/ntos/init/ki.c
+MAIN_SRC = src/minkernel/ntos/init/startup.c
 
 ALL_C_SRC = $(NTOS_SRC) $(KDCOM_SRC) $(MM_SRC) $(HAL_SRC) $(FS_SRC) $(SHELL_SRC) $(KBDCLASS_SRC) $(MOUCLASS_SRC) $(RTL_SRC) $(EX_SRC) $(MAIN_SRC) \
             $(OB_SRC) $(IO_SRC) $(PO_SRC) $(CM_SRC)
