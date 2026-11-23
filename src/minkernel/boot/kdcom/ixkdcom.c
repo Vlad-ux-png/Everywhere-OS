@@ -12,7 +12,8 @@ Abstract:
     16550A UART low-level primitives (CpInitialize, CpSetBaud,
     CpQueryBaud, CpDoesPortExist, CpReadLsr, CpPutByte, CpGetByte)
     and the two public transport entry points that the rest of the
-    kernel sees: KdComPortInitialize and KdComPortWriteString.
+    kernel sees: KdComPortInitialize, KdComPortWriteString and 
+    KdComPortWriteHex32.
 
     All I/O is performed in polling mode.  No interrupts are used.
 
@@ -607,11 +608,35 @@ KdComPortWriteString(
     }
 }
 
+/*++
+
+Routine Description:
+
+    Public entry point.  Writes every hex value in the Value to the debug COM port one byte at a time.
+
+    If the port is not present (KdComDbgPortsPresent == 0) or has not
+    been initialised (KdComPort.Address == 0), this function is a
+    safe no-op.
+
+Arguments:
+
+    Value - hex to write.
+
+Return Value:
+
+    None.
+
+--*/
+
 void
 KdComPortWriteHex32(
     uint32_t Value
     )
 {
+    if (KdComPort.Address == 0 || !KdComDbgPortsPresent) {
+        return;
+    }
+    
     int i;
 
     CpPutByte(&KdComPort, '0');

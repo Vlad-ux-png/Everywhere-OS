@@ -23,8 +23,6 @@ Environment:
 #ifndef _OB_H_
 #define _OB_H_
 
-#pragma once
-
 #include "ntdef.h"
 #include "rtl.h"
 
@@ -89,6 +87,11 @@ ObReferenceObject(
 LONG
 ObDereferenceObject(
     PVOID Object
+    );
+
+NTSTATUS
+NtClose(
+    PVOID FileObject
     );
 
 #endif // _OB_H_

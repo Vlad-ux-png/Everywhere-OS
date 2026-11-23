@@ -120,3 +120,36 @@ ObDereferenceObject(
 
     return NewCount;
 }
+
+/*++
+
+Routine Description:
+
+    Closes an open object by decrementing its reference count.
+    When the reference count reaches zero, the object is automatically destroyed.
+
+Arguments:
+
+    Object - Supplies the object to close.
+
+Return Value:
+
+    NTSTATUS - STATUS_SUCCESS or STATUS_INVALID_PARAMETER.
+
+--*/
+NTSTATUS
+NtClose(
+    PVOID Object
+)
+{
+    if (Object == NULL) {
+        return STATUS_INVALID_PARAMETER;
+    }
+
+    //
+    // Decrement the object reference count
+    //
+    ObDereferenceObject(Object);
+
+    return STATUS_SUCCESS;
+}

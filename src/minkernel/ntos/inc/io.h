@@ -23,18 +23,13 @@ Environment:
 #ifndef _IO_H_
 #define _IO_H_
 
-#include "../inc/ntdef.h"
-#include "../inc/ob.h"
+#include "ntdef.h"
+#include "ob.h"
 
 NTSTATUS
 NtOpenFile(
     PCHAR  FileName,
     PPVOID OutFileObject
-);
-
-NTSTATUS
-NtCloseFile(
-    PVOID FileObject
 );
 
 NTSTATUS

@@ -46,11 +46,11 @@ NtOpenFile(
     PPVOID OutFileObject
 )
 {
-    NTSTATUS          Status;
-    POBJECT_TYPE      FileType;
-    PVOID             FileObject = NULL;
+    NTSTATUS           Status;
+    POBJECT_TYPE       FileType;
+    PVOID              FileObject = NULL;
     PEVRY_FILE_CONTEXT FileContext;
-    LONG              EntryIdx;
+    LONG               EntryIdx;
 
     if (FileName == NULL || OutFileObject == NULL) {
         return STATUS_INVALID_PARAMETER;
@@ -92,38 +92,5 @@ NtOpenFile(
     FileContext->IsWritable    = TRUE;
 
     *OutFileObject = FileObject;
-    return STATUS_SUCCESS;
-}
-
-/*++
-
-Routine Description:
-
-    Closes an open file object by decrementing its reference count.
-    When the reference count reaches zero, the object is automatically destroyed.
-
-Arguments:
-
-    FileObject - Supplies the file object to close.
-
-Return Value:
-
-    NTSTATUS - STATUS_SUCCESS or STATUS_INVALID_PARAMETER.
-
---*/
-NTSTATUS
-NtCloseFile(
-    PVOID FileObject
-)
-{
-    if (FileObject == NULL) {
-        return STATUS_INVALID_PARAMETER;
-    }
-
-    //
-    // Decrement the object reference count
-    //
-    ObDereferenceObject(FileObject);
-
     return STATUS_SUCCESS;
 }

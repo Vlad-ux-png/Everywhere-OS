@@ -45,7 +45,7 @@ MkTestWorkerRoutine(
     Status = NtCreateFile("Test\\hello.txt", hello, sizeof(hello) - 1, &FileObject);
     
     if (NT_SUCCESS(Status) && FileObject != NULL) {
-        NtCloseFile(FileObject);
+        NtClose(FileObject);
     }
 }
 

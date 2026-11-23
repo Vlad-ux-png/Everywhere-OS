@@ -141,7 +141,7 @@ void IconInit(void)
             len = (int)bytesRead;
         }
 
-        NtCloseFile(fileObj);
+        NtClose(fileObj);
     }
 
     if (len < 22) return; // too small
